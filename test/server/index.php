@@ -15,10 +15,12 @@
  * @link        https://github.com/datasift/ms-lib-testrest
  */
 
-$data = array(
-    'success'   => true,
-    'timestamp' => time(),
-    'data'      => $_REQUEST,
+$data = json_encode(
+    array(
+        'success'   => true,
+        'timestamp' => time(),
+        'data'      => $_REQUEST,
+    )
 );
 
 header('Content-Type: application/json');
@@ -27,5 +29,4 @@ header('Pragma: public');
 header('Expires: Thu, 04 jan 1973 00:00:00 GMT'); // Date in the past
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 header('Content-Disposition: inline; filename="'.md5($data).'.json";');
-
-echo json_encode($data);
+echo $data;
