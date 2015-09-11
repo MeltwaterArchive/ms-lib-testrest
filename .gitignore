@@ -1,0 +1,6 @@
+**/vendor
+**/target
+**/local
+phpunit.xml
+**/auth.json
+**/nbproject

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+	bootstrap="test/bootstrap.php"
+	colors="true"
+	verbose="true">
+	<testsuites>
+		<testsuite name="ms-lib-testrest Test Suite">
+			<directory>test/src</directory>
+		</testsuite>
+	</testsuites>
+
+	<filter>
+		<whitelist>
+			<directory suffix="php">src</directory>
+			<exclude>
+				<directory>src/vendor</directory>
+			</exclude>
+		</whitelist>
+	</filter>
+	<logging>
+	<log type="coverage-html" target="target/coverage" charset="UTF-8"/>
+		<log type="coverage-clover" target="target/coverage/coverage.xml" charset="UTF-8"/>
+	<log type="junit" target="target/logs/junit.xml" logIncompleteSkipped="false"/>
+	</logging>
+</phpunit>

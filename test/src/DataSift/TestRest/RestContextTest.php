@@ -1,0 +1,251 @@
+<?php
+/**
+ * This file is part of DataSift\TestRest project.
+ *
+ * LICENSE: This software is the intellectual property of MediaSift Ltd.,
+ * and is covered by retained intellectual property rights, including
+ * copyright. Distribution of this software is strictly forbidden under
+ * the terms of this license.
+ *
+ * @category    Library
+ * @package     DataSift\TestRest
+ * @author      Nicola Asuni <nicola.asuni@datasift.com>
+ * @copyright   2015-2015 MediaSift Ltd.
+ * @license     http://mediasift.com/licenses/internal MediaSift Internal License
+ * @link        https://github.com/datasift/ms-lib-testrest
+ */
+
+namespace Test;
+
+class RestContextTest extends \PHPUnit_Framework_TestCase
+{
+    protected $obj = null;
+    
+    public function setUp()
+    {
+        //$this->markTestSkipped(); // skip this test
+
+        $parameters = array(
+            'base_url' => 'http://localhost:8081',
+            'db' => array(
+                'driver'     => 'mysql',
+                'database'   => 'testrest_test',
+                'host'       => '127.0.0.1',
+                'port'       => 3306,
+                'username'   => 'testrest',
+                'password'   => 'testrest',
+                'sql_schema' => '/../../../test/resources/database/schema.sql',
+                'sql_data'   => '/../../../test/resources/database/data.sql'
+            )
+        );
+        $this->obj = new \DataSift\TestRest\RestContext($parameters);
+        $this->mockClient();
+    }
+
+    protected function getProperty($property)
+    {
+        $reflectionClass = new \ReflectionClass('\DataSift\TestRest\BaseContext');
+        $prop = $reflectionClass->getProperty($property);
+        $prop->setAccessible(true);
+        return $prop;
+    }
+
+    protected function getPropertyValue($property)
+    {
+        $prop = $this->getProperty($property);
+        $prop->getValue();
+    }
+
+    protected function setPropertyValue($property, $value)
+    {
+        $prop = $this->getProperty($property);
+        $prop->setValue($this->obj, $value);
+    }
+
+    protected function mockClient()
+    {
+        $mockResponse = new \Guzzle\Http\Message\Response(200);
+        $mockResponse->setBody(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"echo":"foxtrot","\"quote\"":true}}',
+            'application/json'
+        );
+        $mockResponse->setHeaders(
+            array(
+                "Host"         => "ms-lib-testrest",
+                "User-Agent"   => "test",
+                "Accept"       => "application/json",
+                "Content-Type" => "application/json"
+            )
+        );
+        $plugin = new \Guzzle\Plugin\Mock\MockPlugin();
+        $plugin->addResponse($mockResponse);
+        $client = new \Guzzle\Service\Client();
+        $client->setDefaultOption('exceptions', false);
+        $client->addSubscriber($plugin);
+        $this->setPropertyValue('client', $client);
+        $this->setPropertyValue('response', $mockResponse);
+    }
+
+    public function testThatPropertyIs()
+    {
+        $this->obj->thatPropertyIs('alpha', 'null');
+        $this->obj->thatPropertyIs('beta', 'gamma');
+    }
+
+    public function testThatInputJsonDataIs()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
+        $this->obj->thatInputJsonDataIs($json);
+    }
+
+    public function testIRequest()
+    {
+        $this->obj->iRequest('get', '/');
+    }
+
+    public function testIRequestPost()
+    {
+        $this->obj->iRequest('post', '/');
+    }
+
+    public function testIRequestGetException()
+    {
+        $this->setPropertyValue('client', new \Guzzle\Service\Client());
+        $this->setExpectedException('Exception');
+        $this->obj->iRequest('get', '/');
+    }
+
+    public function testGetResponseData()
+    {
+        $data = json_decode(json_encode($this->obj->getResponseData()), true);
+        $this->assertEquals(
+            array(
+                'hello' => 'world',
+                0 => array(array('alpha' => null), array('gamma' => 3)),
+                1 => array('echo' => 'foxtrot', '"quote"' => true),
+            ),
+            (array)$data
+        );
+    }
+
+    public function testGetResponseDataException()
+    {
+        $this->setExpectedException('Exception');
+        $mockResponse = new \Guzzle\Http\Message\Response(200);
+        $mockResponse->setBody('simple text', 'application/text');
+        $this->setPropertyValue('response', $mockResponse);
+        $this->obj->getResponseData();
+    }
+
+    public function testGetObjectValue()
+    {
+        $data = $this->obj->getObjectValue('hello');
+        $this->assertEquals('world', $data);
+
+        $data = $this->obj->getObjectValue('0[1].gamma');
+        $this->assertEquals(3, $data);
+
+        $data = $this->obj->getObjectValue('1.echo');
+        $this->assertEquals('foxtrot', $data);
+
+        $data = $this->obj->getObjectValue('1.quote');
+        $this->assertTrue($data);
+
+        $this->setExpectedException('Exception');
+        $data = $this->obj->getObjectValue('0[1].error');
+    }
+
+    public function testThePropertyEquals()
+    {
+        $this->obj->thePropertyEquals('hello', 'world');
+        $this->obj->thePropertyEquals('0[1].gamma', '3');
+        $this->obj->thePropertyEquals('1.echo', 'foxtrot');
+        $this->obj->thePropertyEquals('1.quote', 'true');
+        $this->obj->thePropertyEquals('null', 'null');
+        $this->obj->thePropertyEquals('0', '[{"alpha":null},{"gamma":3}]');
+    }
+
+    public function testThePropertyEqualsEx1()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thePropertyEquals('something', 'missing');
+    }
+
+    public function testThePropertyEqualsEx2()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thePropertyEquals('0', '[{"alpha":"b"},{"gamma":3}]');
+    }
+
+    public function testThePropertyEqualsEx3()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thePropertyEquals('hello', 'wrong');
+    }
+
+    public function testThePropertyIsAnWithItems()
+    {
+        $this->obj->thePropertyIsAnWithItems('0', 'array', 2);
+        $this->obj->thePropertyIsAnWithItems('1', 'object', 2);
+        $this->obj->thePropertyIsAnWithItems('missing', 'array', 'null');
+    }
+
+    public function testThePropertyIsAnWithItemsEx1()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thePropertyIsAnWithItems('0', 'array', 3);
+    }
+
+    public function testThePropertyIsAnWithItemsEx2()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thePropertyIsAnWithItems('missing', 'array', 'error');
+    }
+
+    public function testTheTypeOfThePropertyShouldBe()
+    {
+        $this->obj->theTypeOfThePropertyShouldBe('hello', 'string');
+        $this->obj->theTypeOfThePropertyShouldBe('0', 'array');
+        $this->obj->theTypeOfThePropertyShouldBe('1', 'object');
+        $this->obj->theTypeOfThePropertyShouldBe('0[1].gamma', 'integer');
+
+        $this->setExpectedException('Exception');
+        $this->obj->theTypeOfThePropertyShouldBe('1', 'string');
+    }
+
+    public function testTheLengthOfThePropertyShouldBe()
+    {
+        $this->obj->theLengthOfThePropertyShouldBe('hello', 5);
+
+        $this->setExpectedException('Exception');
+        $this->obj->theLengthOfThePropertyShouldBe('hello', 6);
+    }
+
+    public function testTheResponseStatusCodeShouldBe()
+    {
+        $this->obj->theResponseStatusCodeShouldBe(200);
+    }
+
+    public function testTheResponseStatusCodeShouldBeException()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theResponseStatusCodeShouldBe(0);
+    }
+
+    public function testWaitSeconds()
+    {
+        $start = microtime(true);
+        $this->obj->waitSeconds(1);
+        $elapsed = (microtime(true) - $start);
+        $this->assertGreaterThanOrEqual(1, $elapsed);
+    }
+
+    public function testEchoLastResponse()
+    {
+        ob_start();
+        $this->obj->echoLastResponse();
+        $out = ob_get_contents();
+        ob_end_clean();
+        $this->assertEquals('d2468ac6f004816ffe65f95fd17872de', md5($out));
+    }
+}

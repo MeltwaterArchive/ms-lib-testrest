@@ -1,0 +1,31 @@
+# BeHat configuration file
+#
+# This software is the intellectual property of MediaSift Ltd., and is covered
+# by retained intellectual property rights, including copyright.
+# Distribution of this software is strictly forbidden under the terms of this license.
+#
+# @category   Services
+# @package    DataSift\TestRest
+# @author     Nicola Asuni <nicola.asuni@datasift.com>
+# @copyright  2015-2015 MediaSift Ltd.
+# @license    http://mediasift.com/licenses/internal MediaSift Internal License
+# @link       https://github.com/datasift/ms-service-mask
+
+default:
+    filters:
+      tags: "~@ignore"
+    paths:
+        features: 'features'
+        bootstrap: 'features/bootstrap'
+    context:
+        parameters:
+            base_url: http://localhost:8081
+            db:
+                driver: mysql
+                database: testrest_test
+                host: 127.0.0.1
+                port: 3306
+                username: testrest
+                password: testrest
+                sql_schema: '/../../../test/resources/database/schema.sql'
+                sql_data: '/../../../test/resources/database/data.sql'

@@ -1,0 +1,39 @@
+{
+    "name": "datasift/ms-lib-testrest",
+    "description": "Library to test end-to-end RESTful services using Behat",
+    "license": "MediaSift Internal",
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "nicola.asuni@datasift.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "4 as 3",
+        "datasift/ms-lib-phpunitextensions": "dev-develop",
+        "behat/behat" : "2.*",
+        "guzzle/guzzle" : "3.*",
+        "symfony/dependency-injection" : "2.*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "2.0.*",
+        "phpmd/phpmd" : "2.2.*",
+        "sebastian/phpcpd" : "2.0.*",
+        "phploc/phploc" : "2.0.*",
+        "phpdocumentor/phpdocumentor" : "2.5.0",
+        "pdepend/pdepend" : "2.0.*",
+        "symfony/dependency-injection" : "2.4.2 as 2.7.0",
+        "bartlett/php-compatinfo" : "4.3.*"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:datasift/ms-lib-phpunitextensions.git"
+        }
+    ],
+    "autoload": {
+        "psr-0":{
+            "DataSift\\TestRest": "src"
+        }
+    }
+}
