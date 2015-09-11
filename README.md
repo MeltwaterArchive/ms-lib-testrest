@@ -52,7 +52,7 @@ This project requires PHP 5.4.0+ to use the PHP built-in web server.
 ```json
 {
     "require-dev": {
-        "datasift/ms-lib-testrest": "dev-master"
+        "datasift/ms-lib-testrest": "dev-develop"
     },
     "repositories": [
         {
