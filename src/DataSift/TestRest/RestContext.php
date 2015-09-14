@@ -83,6 +83,22 @@ class RestContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
+     * @Then /^the response status code should be "(\d+)"$/
+     *
+     * Example:
+     *     Then the response status code should be "200"
+     */
+    public function theResponseStatusCodeShouldBe($httpStatus)
+    {
+        if ((string)$this->response->getStatusCode() !== (string)$httpStatus) {
+            throw new Exception(
+                'HTTP code does not match '.$httpStatus.
+                ' (actual: '.$this->response->getStatusCode().')'
+            );
+        }
+    }
+
+    /**
      * @Then /^the response is JSON$/
      *
      * Example:
@@ -98,10 +114,10 @@ class RestContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
-     * @Given /^the response has a "([^"]*)" property$/
+     * @Then /^the response has a "([^"]*)" property$/
      *
      * Example:
-     *     Given the response has a "field.name" property
+     *     Then the response has a "field.name" property
      *
      * Get the object value given the property name in dot notation
      *
@@ -137,6 +153,25 @@ class RestContext extends \DataSift\TestRest\BaseContext
             }
         }
         return $obj;
+    }
+
+    /**
+     * @Then /^the type of the "([^"]*)" property should be "([^"]+)"$/
+     *
+     * Examples:
+     *     Then the type of the "field.name" property should be "string"
+     *     Then the type of the "field.count" property should be "integer"
+     */
+    public function theTypeOfThePropertyShouldBe($propertyName, $type)
+    {
+        $value = $this->getObjectValue($propertyName);
+        $valueType = gettype($value);
+        if ($valueType !== $type) {
+            throw new Exception(
+                'Property \''.$propertyName.'\' is of type \''.$valueType
+                .'\' and not \''.$type.'\'!'."\n"
+            );
+        }
     }
 
     /**
@@ -200,25 +235,6 @@ class RestContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
-     * @Then /^the type of the "([^"]*)" property should be "([^"]+)"$/
-     *
-     * Examples:
-     *     Then the type of the "field.name" property should be "string"
-     *     Then the type of the "field.count" property should be "integer"
-     */
-    public function theTypeOfThePropertyShouldBe($propertyName, $type)
-    {
-        $value = $this->getObjectValue($propertyName);
-        $valueType = gettype($value);
-        if ($valueType !== $type) {
-            throw new Exception(
-                'Property \''.$propertyName.'\' is of type \''.$valueType
-                .'\' and not \''.$type.'\'!'."\n"
-            );
-        }
-    }
-
-    /**
      * @Then /^the length of the "([^"]*)" property should be "(\d+)"$/
      *
      * Example:
@@ -231,22 +247,6 @@ class RestContext extends \DataSift\TestRest\BaseContext
             throw new Exception(
                 'The lenght of property \''.$propertyName.'\' is \''.$value_length
                 .'\' and not \''.$length.'\'!'."\n"
-            );
-        }
-    }
-
-    /**
-     * @Then /^the response status code should be "(\d+)"$/
-     *
-     * Example:
-     *     Then the response status code should be "200"
-     */
-    public function theResponseStatusCodeShouldBe($httpStatus)
-    {
-        if ((string)$this->response->getStatusCode() !== (string)$httpStatus) {
-            throw new Exception(
-                'HTTP code does not match '.$httpStatus.
-                ' (actual: '.$this->response->getStatusCode().')'
             );
         }
     }
