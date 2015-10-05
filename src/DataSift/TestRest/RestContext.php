@@ -108,11 +108,15 @@ class RestContext extends \DataSift\TestRest\BaseContext
         $this->restObjMethod = strtolower($method);
         $this->requestUrl = $this->getParameter('base_url').$pageUrl;
         $method = strtolower($this->restObjMethod);
+        $headers = null;
+        if (!empty($this->reqHeaders)) {
+            $headers = (array)$this->reqHeaders;
+        }
         $body = (array)$this->restObj;
         if (in_array($method, array('get', 'head', 'delete'))) {
             $this->response = $this->client->$method($this->requestUrl.'?'.http_build_query($body))->send();
         } elseif (in_array($method, array('post', 'put', 'patch'))) {
-            $this->response = $this->client->$method($this->requestUrl, null, $body)->send();
+            $this->response = $this->client->$method($this->requestUrl, $headers, $body)->send();
         }
     }
 
@@ -129,6 +133,24 @@ class RestContext extends \DataSift\TestRest\BaseContext
                 'HTTP code does not match '.$httpStatus.
                 ' (actual: '.$this->response->getStatusCode().')'
             );
+        }
+    }
+
+    /**
+     * @Then /^the "([^"]+)" header property equals "([^\n]*)"$/
+     *
+     * Example:
+     *     Then the "Connection" header property equals "close"
+     */
+    public function theHeaderPropertyEquals($propertyName, $propertyValue)
+    {
+        $value = $this->response->getHeader($propertyName);
+        if (($value === null) && ($propertyValue == 'null')) {
+            return;
+        }
+        // compare values
+        if ((string)$value !== (string)$propertyValue) {
+            throw new Exception('Property value mismatch! (given: '.$propertyValue.', match: '.$value.')');
         }
     }
 
@@ -283,16 +305,5 @@ class RestContext extends \DataSift\TestRest\BaseContext
                 .'\' and not \''.$length.'\'!'."\n"
             );
         }
-    }
-
-    /**
-     * @Then /^echo last response$/
-     *
-     * Example:
-     *     Then echo last response
-     */
-    public function echoLastResponse()
-    {
-        $this->printDebug($this->requestUrl."\n\n".$this->response);
     }
 }

@@ -54,6 +54,13 @@ class BaseContext extends BehatContext
     protected $restObj = null;
 
     /**
+     * Array containing the header data to send
+     *
+     * @var array
+     */
+    protected $reqHeaders = array();
+
+    /**
      * HTTP method (get, head, delete, post, put, patch)
      *
      * @var string
@@ -162,5 +169,30 @@ class BaseContext extends BehatContext
     public function waitSeconds($delay)
     {
         sleep($delay);
+    }
+
+    /**
+     * @Then /^echo last response$/
+     *
+     * Example:
+     *     Then echo last response
+     */
+    public function echoLastResponse()
+    {
+        $this->printDebug($this->requestUrl."\n\n".$this->response);
+    }
+
+    /**
+     * @Given /^that header property "([^"]*)" is "([^\n]*)"$/
+     *
+     * Example:
+     *     Given that header property "Test" is "12345"
+     */
+    public function thatHeaderPropertyIs($propertyName, $propertyValue)
+    {
+        if (($propertyValue === 'null')) {
+            return;
+        }
+        $this->reqHeaders[$propertyName] = $propertyValue;
     }
 }

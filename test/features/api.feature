@@ -1,6 +1,7 @@
 Feature: Testing if the API is responding
 
 Scenario: Simple test that show all options
+    Given that header property "Test" is "12345"
     Given that "property[0].name" is "12345"
     Given that input JSON data is
     """
@@ -16,6 +17,7 @@ Scenario: Simple test that show all options
     Then echo last response
     Then wait "1" second
     Then the response status code should be "200"
+    Then the "Connection" header property equals "close"
     Then the response is JSON
     Then the response has a "success" property
     Then the type of the "success" property should be "boolean"

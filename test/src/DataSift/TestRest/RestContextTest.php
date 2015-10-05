@@ -86,6 +86,12 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->setPropertyValue('response', $mockResponse);
     }
 
+    public function testThatHeaderPropertyIs()
+    {
+        $this->obj->thatHeaderPropertyIs('alpha', 'null');
+        $this->obj->thatHeaderPropertyIs('beta', '123');
+    }
+
     public function testThatPropertyIs()
     {
         $this->obj->thatPropertyIs('alpha', 'null');
@@ -119,6 +125,7 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
 
     public function testIRequestPost()
     {
+        $this->obj->thatHeaderPropertyIs('beta', '1234');
         $this->obj->iRequest('post', '/');
     }
 
@@ -127,6 +134,18 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->setPropertyValue('client', new \Guzzle\Service\Client());
         $this->setExpectedException('Exception');
         $this->obj->iRequest('get', '/');
+    }
+
+    public function testTheHeaderPropertyEquals()
+    {
+        $this->obj->theHeaderPropertyEquals('User-Agent', 'test');
+        $this->obj->theHeaderPropertyEquals('missing', 'null');
+    }
+
+    public function testTheHeaderPropertyEqualsEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theHeaderPropertyEquals('User-Agent', 'wrong');
     }
 
     public function testGetResponseData()
