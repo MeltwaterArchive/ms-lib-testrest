@@ -40,9 +40,28 @@ class RestContext extends \DataSift\TestRest\BaseContext
      */
     public function thatPropertyIs($propertyName, $propertyValue)
     {
-        if (($propertyValue !== 'null')) {
-            $this->restObj->$propertyName = $propertyValue;
+        if (($propertyValue === 'null')) {
+            return;
         }
+        $val = $propertyValue;
+        // explode property name
+        $keys = array_reverse(explode('.', $propertyName));
+        foreach ($keys as $key) {
+            // extract the array index (if any)
+            $kdx = explode('[', $key);
+            unset($idx);
+            if (!empty($kdx[1])) {
+                $key = $kdx[0];
+                $idx = substr($kdx[1], 0, -1);
+            }
+            if (isset($idx)) {
+                $val = array($idx => $val);
+            }
+            $obj = new \stdClass();
+            $obj->$key = $val;
+            $val = $obj;
+        }
+        $this->restObj = (object)array_merge((array)$this->restObj, (array)$obj);
     }
 
     /**
@@ -59,6 +78,21 @@ class RestContext extends \DataSift\TestRest\BaseContext
      */
     public function thatInputJsonDataIs(PyStringNode $json)
     {
+        $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
+    }
+
+    /**
+     * @Given /^that input JSON data file is "([^"]*)"$/
+     *
+     * Example:
+     *     Given that input JSON data file is "/tmp/data.json"
+     */
+    public function thatInputJsonDataFileIs($file)
+    {
+        if (!is_readable($file)) {
+            throw new Exception('Unable to read the JSON file: '.$file);
+        }
+        $json = file_get_contents($file);
         $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
     }
 
@@ -212,7 +246,7 @@ class RestContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
-     * @Then /^the "([^"]*)" property is an "(array|object)" with "(null|\d+)" items$/
+     * @Then /^the "([^"]*)" property is an "(array|object)" with "(null|\d+)" item[s]?$/
      *
      * Examples:
      *     Then the "data" property is an "array" with "5" items
@@ -249,18 +283,6 @@ class RestContext extends \DataSift\TestRest\BaseContext
                 .'\' and not \''.$length.'\'!'."\n"
             );
         }
-    }
-
-    /**
-     * @Then /^wait "(\d+)" second[s]?$/
-     *
-     * Examples:
-     *     Then wait "1" second
-     *     Then wait "3" seconds
-     */
-    public function waitSeconds($delay)
-    {
-        sleep($delay);
     }
 
     /**

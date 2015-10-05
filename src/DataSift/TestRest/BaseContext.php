@@ -151,4 +151,16 @@ class BaseContext extends BehatContext
 
         $dbtest = null; // close the database connection
     }
+
+    /**
+     * @Then /^wait "(\d+)" second[s]?$/
+     *
+     * Examples:
+     *     Then wait "1" second
+     *     Then wait "3" seconds
+     */
+    public function waitSeconds($delay)
+    {
+        sleep($delay);
+    }
 }

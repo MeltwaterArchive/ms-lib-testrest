@@ -90,12 +90,26 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->obj->thatPropertyIs('alpha', 'null');
         $this->obj->thatPropertyIs('beta', 'gamma');
+        $this->obj->thatPropertyIs('one[3].two', '1.23');
     }
 
     public function testThatInputJsonDataIs()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
         $this->obj->thatInputJsonDataIs($json);
+    }
+
+    public function testThatInputJsonDataFileIs()
+    {
+        $file = 'test/resources/data.json';
+        $this->obj->thatInputJsonDataFileIs($file);
+    }
+
+    public function testThatInputJsonDataFileIsException()
+    {
+        $this->setExpectedException('Exception');
+        $file = 'test/resources/error.json';
+        $this->obj->thatInputJsonDataFileIs($file);
     }
 
     public function testIRequest()
