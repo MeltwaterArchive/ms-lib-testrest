@@ -4,3 +4,5 @@
 phpunit.xml
 **/auth.json
 **/nbproject
+
+.idea

@@ -83,6 +83,27 @@ class RestContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
+         * Sends HTTP request to specific URL with raw body from PyString.
+         *
+         * @param string       $method request method
+         * @param string       $url    relative url
+         * @param PyStringNode $string request body
+         *
+         * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)" with body:$/
+         */
+        public function iMakeARequestWithBody($method, $pageUrl, PyStringNode $bodyIn)
+        {
+            $this->restObjMethod = strtolower($method);
+            $this->requestUrl = $this->getParameter('base_url').$pageUrl;
+            $method = strtolower($this->restObjMethod);
+            if (in_array($method, array('get', 'head', 'delete'))) {
+                $this->response = $this->client->$method($this->requestUrl.'?'.http_build_query($bodyIn))->send();
+            } elseif (in_array($method, array('post', 'put', 'patch'))) {
+                $this->response = $this->client->$method($this->requestUrl, null, $bodyIn)->send();
+            }
+        }
+
+    /**
      * @Then /^the response status code should be "(\d+)"$/
      *
      * Example:
