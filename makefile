@@ -57,6 +57,7 @@ all: help
 
 # Run the PHPUnit tests
 test:
+	mkdir -p ./target/
 	./vendor/bin/phpunit test
 
 # Run the Behat tests (behavior test)
