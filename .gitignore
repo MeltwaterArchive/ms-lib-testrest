@@ -1,8 +1,7 @@
+phpunit.xml
 **/vendor
 **/target
 **/local
-phpunit.xml
 **/auth.json
 **/nbproject
-
-.idea
+**/.idea
