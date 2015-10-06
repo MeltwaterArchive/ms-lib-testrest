@@ -47,3 +47,18 @@ Scenario Outline: Test data table mode
         | name  | code | success |
         | alpha |  200 | true    |
         | bravo |  200 | true    |
+
+Scenario: Test Raw data
+    Given that input RAW data is
+    """
+    {
+        "alpha":"beta",
+        "gamma":"delta",
+        "count":3,
+        "collection":["a","b","c"]
+    }
+    """
+    When I make a "POST" request to "/"
+    Then the response status code should be "200"
+    Then the "success" property equals "true"
+    Then the response has a "raw" property

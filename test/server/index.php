@@ -20,6 +20,7 @@ $data = json_encode(
         'success'   => true,
         'timestamp' => time(),
         'data'      => $_REQUEST,
+        'raw'       => file_get_contents('php://input')
     )
 );
 
