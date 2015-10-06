@@ -82,6 +82,23 @@ class RestContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
+     * @Given /^that input RAW data is$/
+     *
+     * Example:
+     *     Given that input RAW data is
+     *     """
+     *     {
+     *          "field":"value",
+     *          "count":1
+     *     }
+     *     """
+     */
+    public function thatInputRawDataIs(PyStringNode $data)
+    {
+        $this->restObj = (string)$data;
+    }
+
+    /**
      * @Given /^that input JSON data file is "([^"]*)"$/
      *
      * Example:
@@ -95,51 +112,6 @@ class RestContext extends \DataSift\TestRest\BaseContext
         $json = file_get_contents($file);
         $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
     }
-
-    /**
-     * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)"$/
-     *
-     * Example:
-     *     When I make a "POST" request to "/my/api/entry/point"
-     *     When I make a "GET" request to "/my/api/entry/point"
-     */
-    public function iRequest($method, $pageUrl)
-    {
-        $this->restObjMethod = strtolower($method);
-        $this->requestUrl = $this->getParameter('base_url').$pageUrl;
-        $method = strtolower($this->restObjMethod);
-        $headers = null;
-        if (!empty($this->reqHeaders)) {
-            $headers = (array)$this->reqHeaders;
-        }
-        $body = (array)$this->restObj;
-        if (in_array($method, array('get', 'head', 'delete'))) {
-            $this->response = $this->client->$method($this->requestUrl.'?'.http_build_query($body))->send();
-        } elseif (in_array($method, array('post', 'put', 'patch'))) {
-            $this->response = $this->client->$method($this->requestUrl, $headers, $body)->send();
-        }
-    }
-
-    /**
-         * Sends HTTP request to specific URL with raw body from PyString.
-         *
-         * @param string       $method request method
-         * @param string       $url    relative url
-         * @param PyStringNode $string request body
-         *
-         * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)" with body:$/
-         */
-        public function iMakeARequestWithBody($method, $pageUrl, PyStringNode $bodyIn)
-        {
-            $this->restObjMethod = strtolower($method);
-            $this->requestUrl = $this->getParameter('base_url').$pageUrl;
-            $method = strtolower($this->restObjMethod);
-            if (in_array($method, array('get', 'head', 'delete'))) {
-                $this->response = $this->client->$method($this->requestUrl.'?'.http_build_query($bodyIn))->send();
-            } elseif (in_array($method, array('post', 'put', 'patch'))) {
-                $this->response = $this->client->$method($this->requestUrl, null, $bodyIn)->send();
-            }
-        }
 
     /**
      * @Then /^the response status code should be "(\d+)"$/

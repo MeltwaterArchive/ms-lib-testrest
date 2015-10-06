@@ -195,4 +195,35 @@ class BaseContext extends BehatContext
         }
         $this->reqHeaders[$propertyName] = $propertyValue;
     }
+
+    /**
+     * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)"$/
+     *
+     * Example:
+     *     When I make a "POST" request to "/my/api/entry/point"
+     *     When I make a "GET" request to "/my/api/entry/point"
+     */
+    public function iRequest($method, $pageUrl)
+    {
+        $this->restObjMethod = strtolower($method);
+        $this->requestUrl = $this->getParameter('base_url').$pageUrl;
+        $method = strtolower($this->restObjMethod);
+        $headers = null;
+        if (!empty($this->reqHeaders)) {
+            $headers = (array)$this->reqHeaders;
+        }
+        $body = $this->restObj;
+        if (!is_string($body)) {
+            $body = (array)$this->restObj;
+        }
+        if (in_array($method, array('get', 'head', 'delete'))) {
+            $url = $this->requestUrl;
+            if (is_array($body)) {
+                $url .= '?'.http_build_query($body);
+            }
+            $this->response = $this->client->$method($url)->send();
+        } elseif (in_array($method, array('post', 'put', 'patch'))) {
+            $this->response = $this->client->$method($this->requestUrl, $headers, $body)->send();
+        }
+    }
 }
