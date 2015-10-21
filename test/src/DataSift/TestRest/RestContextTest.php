@@ -124,6 +124,19 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatInputJsonDataFileIs($file);
     }
 
+    public function testThatInputRawDataFileIs()
+    {
+        $file = 'test/resources/data.json';
+        $this->obj->thatInputRawDataFileIs($file);
+    }
+
+    public function testThatInputRawDataFileIsException()
+    {
+        $this->setExpectedException('Exception');
+        $file = 'test/resources/error.json';
+        $this->obj->thatInputRawDataFileIs($file);
+    }
+
     public function testIRequest()
     {
         $this->obj->iRequest('get', '/');

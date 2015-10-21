@@ -3,6 +3,8 @@ Feature: Testing if the API is responding
 Scenario: Simple test that show all options
     Given that header property "Test" is "12345"
     Given that "property[0].name" is "12345"
+    # NOTE: The following loads data from a JSON file and converts it into array format.
+    #       To load a raw JSON string, use "Given that input RAW data is" as shown below
     Given that input JSON data is
     """
     {
@@ -12,6 +14,7 @@ Scenario: Simple test that show all options
         "collection":["a","b","c"]
     }
     """
+    # The following loads data from a JSON file and merge it with the existing one
     Given that input JSON data file is "test/resources/data.json"
     When I make a "GET" request to "/"
     Then echo last response
@@ -58,6 +61,14 @@ Scenario: Test Raw data
         "collection":["a","b","c"]
     }
     """
+    When I make a "POST" request to "/"
+    Then the response status code should be "200"
+    Then the "success" property equals "true"
+    Then the response has a "raw" property
+
+Scenario: Test RAW input file data
+    # load RAW data from a file
+    Given that input RAW data file is "test/resources/data.json"
     When I make a "POST" request to "/"
     Then the response status code should be "200"
     Then the "success" property equals "true"

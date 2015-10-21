@@ -95,8 +95,8 @@ class BaseContext extends BehatContext
     }
 
     /**
-     * Get the value of the specified parameter
-     * The context parameters are defined in behat.yml (default.context.parameters...)
+     * Get the value of the specified parameter.
+     * The context parameters are defined in behat.yml (default.context.parameters...).
      *
      * @param string $name Parameter name
      *
@@ -111,10 +111,10 @@ class BaseContext extends BehatContext
     }
 
     /**
-     * @BeforeFeature
-     *
-     * Setup the database before every feature
+     * Setup the database before every feature (if configured).
      * The database settings are defined in behat.yml
+     *
+     * @BeforeFeature
      */
     public static function setupEnvironment()
     {
@@ -160,11 +160,14 @@ class BaseContext extends BehatContext
     }
 
     /**
-     * @Then /^wait "(\d+)" second[s]?$/
+     *
+     * Delays the program execution for the given number of seconds.
      *
      * Examples:
      *     Then wait "1" second
      *     Then wait "3" seconds
+     *
+     * @Then /^wait "(\d+)" second[s]?$/
      */
     public function waitSeconds($delay)
     {
@@ -172,58 +175,15 @@ class BaseContext extends BehatContext
     }
 
     /**
-     * @Then /^echo last response$/
+     * Print the last raw response.
      *
      * Example:
      *     Then echo last response
+     *
+     * @Then /^echo last response$/
      */
     public function echoLastResponse()
     {
         $this->printDebug($this->requestUrl."\n\n".$this->response);
-    }
-
-    /**
-     * @Given /^that header property "([^"]*)" is "([^\n]*)"$/
-     *
-     * Example:
-     *     Given that header property "Test" is "12345"
-     */
-    public function thatHeaderPropertyIs($propertyName, $propertyValue)
-    {
-        if (($propertyValue === 'null')) {
-            return;
-        }
-        $this->reqHeaders[$propertyName] = $propertyValue;
-    }
-
-    /**
-     * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)"$/
-     *
-     * Example:
-     *     When I make a "POST" request to "/my/api/entry/point"
-     *     When I make a "GET" request to "/my/api/entry/point"
-     */
-    public function iRequest($method, $pageUrl)
-    {
-        $this->restObjMethod = strtolower($method);
-        $this->requestUrl = $this->getParameter('base_url').$pageUrl;
-        $method = strtolower($this->restObjMethod);
-        $headers = null;
-        if (!empty($this->reqHeaders)) {
-            $headers = (array)$this->reqHeaders;
-        }
-        $body = $this->restObj;
-        if (!is_string($body)) {
-            $body = (array)$this->restObj;
-        }
-        if (in_array($method, array('get', 'head', 'delete'))) {
-            $url = $this->requestUrl;
-            if (is_array($body)) {
-                $url .= '?'.http_build_query($body);
-            }
-            $this->response = $this->client->$method($url)->send();
-        } elseif (in_array($method, array('post', 'put', 'patch'))) {
-            $this->response = $this->client->$method($this->requestUrl, $headers, $body)->send();
-        }
     }
 }
