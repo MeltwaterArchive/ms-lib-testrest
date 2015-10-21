@@ -7,6 +7,9 @@
 # List special make targets that are not associated with files
 .PHONY: help all test btest docs phpcs phpcs_test phpcbf phpcbf_test phpmd phpmd_test phpcpd phploc phpdep phpcmpinfo report qa qa_all clean build build_dev update server
 
+# package name
+PKGNAME=ms-lib-testrest
+
 # Default port number for the test server
 PORT?=8081
 
@@ -17,9 +20,10 @@ COMPOSER=$(shell which php) -d "apc.enable_cli=0" $(shell which composer)
 
 # Display general help about this command
 help:
-	@echo "\nWelcome to ms-lib-testrest make."
-	@echo "The following commands are available:\n"
-
+	@echo ""
+	@echo "Welcome to $(PKGNAME) make."
+	@echo "The following commands are available:"
+	@echo ""
 	@echo "    make qa          : Run the targets: test, phpcs and phpmd"
 	@echo "    make qa_all      : Run the targets: test, phpcs, phpcs_test, phpmd and phpmd_test"
 	@echo ""
@@ -50,7 +54,7 @@ help:
 	@echo "    make build       : Clean and download the composer dependencies"
 	@echo "    make build_dev   : Clean and download the composer dependencies including dev ones"
 	@echo "    make update      : Update composer dependencies"
-	@echo "\n"
+	@echo ""
 
 # Alias for help target
 all: help
@@ -65,9 +69,9 @@ btest:
 	nohup $(shell which php) -t test/server -S localhost:$(PORT) > target/server.log 2>&1 & echo $$! > target/server.pid
 	./vendor/bin/behat --config test/behat.yml -f pretty,junit,html --out ,target/behat,target/behat.html ; echo $$? > target/behat.exit; kill -9 `cat target/server.pid` ; exit `cat target/behat.exit`
 
-# Generate docs using phpDocumentor
+# generate source code docs
 docs:
-	@rm -rf target/phpdocs && ./vendor/phpdocumentor/phpdocumentor/bin/phpdoc project:run --target="target/phpdocs/" --directory="src/" --ignore="vendor/" --encoding="UTF-8" --title="PhpCommon" --parseprivate
+	@rm -rf target/phpdocs && ./vendor/apigen/apigen/bin/apigen generate --source="src/" --destination="target/phpdocs/" --exclude="vendor" --access-levels="public,protected,private" --charset="UTF-8" --title="${PKGNAME}"
 
 # Run PHPCS on the source code and show any style violations
 phpcs:
@@ -114,10 +118,10 @@ phpcmpinfo:
 	COMPATINFO=phpcompatinfo.json ./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run --alias source > ./target/report/phpcompatinfo.txt
 
 # generates static code analysis reports
-report: phpcpd phploc phpdep phpcmpinfo
+report: phploc phpdep phpcmpinfo
 
 # Alias to run targets: test, phpcs and phpmd
-qa: test btest phpcs phpmd
+qa: test btest phpcs phpmd phpcpd
 
 # Alias to run targets: qa, phpcs_test, phpmd_test
 qa_all: qa phpcs_test phpmd_test
@@ -131,12 +135,15 @@ clean:
 	rm -rf ./vendor/
 
 # Clean and download the composer dependencies
-build: clean
-	($(COMPOSER) -n install --no-dev)
+build:
+	rm -rf ./vendor/ && ($(COMPOSER) -n install --no-dev --no-interaction)
+	# sanitize the vendor directory by removing unnecessary files and directories
+	@find ./vendor/ -maxdepth 3 -type d \( -name "example*" -o -name "tool*" -o -name "doc*" -o -name "resource*" -o -name "test*" -o -name ".git" -o -name "sampleapp" \) -exec rm -rf {} +
+	@find ./vendor/ -maxdepth 3 -type f \( -name "composer.json" -o -name "composer.lock" -o -name "makefile" -o -name "phpcompatinfo.json" -o -name "phpunit.*" -o -name "phpcs.xml" -o -name "pom.xml" -o -name ".gitignore" \) -exec rm -rf {} +
 
 # Clean and download the composer dependencies including dev ones
-build_dev: clean
-	($(COMPOSER) -n install)
+build_dev:
+	rm -rf ./vendor/ && ($(COMPOSER) -n install --no-interaction --ignore-platform-reqs)
 
 # Update composer dependencies
 update:

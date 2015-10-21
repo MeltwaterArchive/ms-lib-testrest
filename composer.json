@@ -18,7 +18,7 @@
         "phpmd/phpmd" : "2.2.*",
         "sebastian/phpcpd" : "2.0.*",
         "phploc/phploc" : "2.0.*",
-        "phpdocumentor/phpdocumentor" : "2.5.0",
+        "apigen/apigen" : "4.1.*",
         "pdepend/pdepend" : "2.0.*",
         "symfony/dependency-injection" : "2.4.2 as 2.7.0",
         "bartlett/php-compatinfo" : "4.3.*"
