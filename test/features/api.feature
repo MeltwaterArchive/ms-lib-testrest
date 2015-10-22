@@ -25,6 +25,7 @@ Scenario: Simple test that show all options
     Then the response has a "success" property
     Then the type of the "success" property should be "boolean"
     Then the "success" property equals "true"
+    Then the value of the "datetime" property should match the pattern "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
     Then the "data" property is an "object" with "10" items
     Then the "data.property" property is an "array" with "1" item
     Then the "data.property[0].name" property equals "12345"

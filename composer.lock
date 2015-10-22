@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9296b611fd6c896b8eacf41a8b1349b3",
-    "content-hash": "7983060c6fb374586b89ba9e10ced4cb",
+    "hash": "12c9c2e8eaa174cb854295063ea7601c",
+    "content-hash": "f3d4332bfd92f648536c20fdd8f7f931",
     "packages": [
         {
             "name": "behat/behat",
@@ -334,26 +334,29 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v2.4.2",
-            "target-dir": "Symfony/Component/DependencyInjection",
+            "version": "v2.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "dde921399691bdb3b32a3c2557dcb2054db7593a"
+                "reference": "422c3819b110f610d79c6f1dc38af23787dc790e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/dde921399691bdb3b32a3c2557dcb2054db7593a",
-                "reference": "dde921399691bdb3b32a3c2557dcb2054db7593a",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/422c3819b110f610d79c6f1dc38af23787dc790e",
+                "reference": "422c3819b110f610d79c6f1dc38af23787dc790e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.9"
+            },
+            "conflict": {
+                "symfony/expression-language": "<2.6"
             },
             "require-dev": {
                 "symfony/config": "~2.2",
-                "symfony/expression-language": "~2.4",
-                "symfony/yaml": "~2.0"
+                "symfony/expression-language": "~2.6",
+                "symfony/phpunit-bridge": "~2.7",
+                "symfony/yaml": "~2.1"
             },
             "suggest": {
                 "symfony/config": "",
@@ -363,11 +366,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\DependencyInjection\\": ""
                 }
             },
@@ -377,17 +380,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony DependencyInjection Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-02-11 13:52:09"
+            "homepage": "https://symfony.com",
+            "time": "2015-09-15 08:30:42"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -3473,14 +3476,7 @@
             "time": "2015-10-09 14:29:03"
         }
     ],
-    "aliases": [
-        {
-            "alias": "2.7.0",
-            "alias_normalized": "2.7.0.0",
-            "version": "2.4.2.0",
-            "package": "symfony/dependency-injection"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,

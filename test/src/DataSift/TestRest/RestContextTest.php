@@ -273,6 +273,20 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->theLengthOfThePropertyShouldBe('hello', 6);
     }
 
+    public function testTheValueOfThePropertyShouldMatchThePattern()
+    {
+        $this->obj->theValueOfThePropertyShouldMatchThePattern('hello', '/^[a-z]{5}$/');
+
+        $this->setExpectedException('Exception');
+        $this->obj->theValueOfThePropertyShouldMatchThePattern('hello', '/^[0-9]+$/');
+    }
+
+    public function testTheValueOfThePropertyShouldMatchThePatternEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theValueOfThePropertyShouldMatchThePattern(-1, -0);
+    }
+
     public function testTheResponseStatusCodeShouldBe()
     {
         $this->obj->theResponseStatusCodeShouldBe(200);

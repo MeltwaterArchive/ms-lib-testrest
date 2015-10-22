@@ -18,7 +18,6 @@
 namespace DataSift\TestRest;
 
 use \DataSift\TestRest\Exception;
-use \Behat\Gherkin\Node\PyStringNode;
 
 /**
  * DataSift\TestRest\RestContext
@@ -48,6 +47,23 @@ class RestContext extends \DataSift\TestRest\InputContext
                 ' (actual: '.$this->response->getStatusCode().')'
             );
         }
+    }
+
+    /**
+     * Verify if the response is in JSON format.
+     *
+     * Example:
+     *     Then the response is JSON
+     *
+     * @Then /^the response is JSON$/
+     */
+    public function getResponseData()
+    {
+        $data = json_decode($this->response->getBody(true));
+        if (empty($data)) {
+            throw new Exception('Response was not JSON:'."\n\n".$this->response->getBody(true));
+        }
+        return $data;
     }
 
     /**
@@ -177,70 +193,24 @@ class RestContext extends \DataSift\TestRest\InputContext
     }
 
     /**
-     * Assign a value to a header property.
+     * Check if the value of the specified property matches the defined regular expression pattern
      *
      * Example:
-     *     Given that header property "Test" is "12345"
+     *     Then the value of the "datetime" property should match the pattern
+     *     "^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$"
      *
-     * @Given /^that header property "([^"]*)" is "([^\n]*)"$/
+     * @Then /^the value of the "([^"]*)" property should match the pattern "([^\n]*)"$/
      */
-    public function thatHeaderPropertyIs($propertyName, $propertyValue)
+    public function theValueOfThePropertyShouldMatchThePattern($propertyName, $pattern)
     {
-        if (($propertyValue === 'null')) {
-            return;
+        $value = (string)$this->getObjectValue($propertyName);
+        $result = preg_match($pattern, $value);
+        if (empty($result)) {
+            throw new Exception(
+                'The value of property \''.$propertyName.'\' is \''.$value
+                .'\' and do not match the pattern \''.$pattern.'\'!'."\n"
+            );
         }
-        $this->reqHeaders[$propertyName] = $propertyValue;
-    }
-
-    /**
-     * Perform a request to the specified end point.
-     * NOTE: The properties to send with this request must be set before this entry.
-     *
-     * Example:
-     *     When I make a "POST" request to "/my/api/entry/point"
-     *     When I make a "GET" request to "/my/api/entry/point"
-     *
-     * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)"$/
-     */
-    public function iRequest($method, $pageUrl)
-    {
-        $this->restObjMethod = strtolower($method);
-        $this->requestUrl = $this->getParameter('base_url').$pageUrl;
-        $method = strtolower($this->restObjMethod);
-        $headers = null;
-        if (!empty($this->reqHeaders)) {
-            $headers = (array)$this->reqHeaders;
-        }
-        $body = $this->restObj;
-        if (!is_string($body)) {
-            $body = (array)$this->restObj;
-        }
-        if (in_array($method, array('get', 'head', 'delete'))) {
-            $url = $this->requestUrl;
-            if (is_array($body)) {
-                $url .= '?'.http_build_query($body);
-            }
-            $this->response = $this->client->$method($url)->send();
-        } elseif (in_array($method, array('post', 'put', 'patch'))) {
-            $this->response = $this->client->$method($this->requestUrl, $headers, $body)->send();
-        }
-    }
-
-    /**
-     * Verify if the response is in JSON format.
-     *
-     * Example:
-     *     Then the response is JSON
-     *
-     * @Then /^the response is JSON$/
-     */
-    public function getResponseData()
-    {
-        $data = json_decode($this->response->getBody(true));
-        if (empty($data)) {
-            throw new Exception('Response was not JSON:'."\n\n".$this->response->getBody(true));
-        }
-        return $data;
     }
 
     /**

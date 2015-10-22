@@ -19,6 +19,7 @@ $data = json_encode(
     array(
         'success'   => true,
         'timestamp' => time(),
+        'datetime'  => gmdate('Y-m-d H:i:s'),
         'data'      => $_REQUEST,
         'raw'       => file_get_contents('php://input')
     )

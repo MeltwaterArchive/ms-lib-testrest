@@ -61,7 +61,7 @@ all: help
 
 # Run the PHPUnit tests
 test:
-	mkdir -p ./target/
+	@mkdir -p ./target/
 	./vendor/bin/phpunit test
 
 # Run the Behat tests (behavior test)
@@ -99,22 +99,22 @@ phpcbf_test:
 
 # Run PHP Copy/Paste Detector
 phpcpd:
-	mkdir -p ./target/report/
+	@mkdir -p ./target/report/
 	@./vendor/bin/phpcpd src --exclude vendor > ./target/report/phpcpd.txt
 
 # Run PHPLOC to analyze the structure of the project
 phploc:
-	mkdir -p ./target/report/
+	@mkdir -p ./target/report/
 	@./vendor/bin/phploc src --exclude vendor > ./target/report/phploc.txt
 
 # PHP static analysis
 phpdep:
-	mkdir -p ./target/report/
+	@mkdir -p ./target/report/
 	@./vendor/bin/pdepend --jdepend-xml=./target/report/dependencies.xml --summary-xml=./target/report/metrics.xml --jdepend-chart=./target/report/dependecies.svg --overview-pyramid=./target/report/overview-pyramid.svg --ignore=vendor ./src
 
 # parse any data source to find out the minimum version and extensions required for it to run
 phpcmpinfo:
-	mkdir -p ./target/report/
+	@mkdir -p ./target/report/
 	COMPATINFO=phpcompatinfo.json ./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run --alias source > ./target/report/phpcompatinfo.txt
 
 # generates static code analysis reports
@@ -147,4 +147,4 @@ build_dev:
 
 # Update composer dependencies
 update:
-	($(COMPOSER) -n update)
+	($(COMPOSER) -n update --no-interaction --ignore-platform-reqs)
