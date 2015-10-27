@@ -139,7 +139,14 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
 
     public function testIRequest()
     {
+        $this->obj->thatPropertyIs('var', 'value');
         $this->obj->iRequest('get', '/');
+    }
+
+    public function testIRequestAppend()
+    {
+        $this->obj->thatPropertyIs('var', 'value');
+        $this->obj->iRequest('get', '/?a=b');
     }
 
     public function testIRequestPost()
