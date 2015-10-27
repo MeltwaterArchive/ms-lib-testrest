@@ -1,5 +1,20 @@
 Feature: Testing if the API is responding
 
+Scenario: Test JSON data
+    Given that the body is valid JSON
+    """
+    {
+        "alpha":"beta",
+        "gamma":"delta",
+        "count":3,
+        "collection":["a","b","c"]
+    }
+    """
+    When I make a "POST" request to "/"
+    Then echo last response
+    Then the response status code should be "200"
+    Then the "success" property equals "true"
+    
 Scenario: Simple test that show all options
     Given that header property "Test" is "12345"
     And that "property[0].name" is "12345"
