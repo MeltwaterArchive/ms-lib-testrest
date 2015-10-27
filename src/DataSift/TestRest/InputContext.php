@@ -214,14 +214,11 @@ class InputContext extends \DataSift\TestRest\BaseContext
      */
     public function thatThePropertiesInThe($type, $data)
     {
-        // @todo ...
-        if ($type == 'TABLE') {
-            $table = new TableNode($data);
-            return $this->thatThePropertiesInTheTable($table);
+        if (($type == 'TABLE') && ($data instanceof TableNode)) {
+            return $this->thatThePropertiesInTheTable($data);
         }
-        if ($type == 'JSON') {
-            $json = new PyStringNode($data);
-            return $this->thatThePropertiesInTheJson($json);
+        if (($type == 'JSON') && ($data instanceof PyStringNode)) {
+            return $this->thatThePropertiesInTheJson($data);
         }
         throw new Exception('Invalid type: '.$type.'; only "TABLE" and "JSON" are valid.');
     }
