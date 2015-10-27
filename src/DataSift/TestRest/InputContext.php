@@ -153,6 +153,31 @@ class InputContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
+     * Overwrites the message body payload wih the provided JSON string
+     * and set the Content-Type to "application/json".
+     *
+     * Example:
+     *
+     *     Given that the body is valid JSON
+     *     """
+     *     {
+     *          "field":"value",
+     *          "count":1
+     *     }
+     *     """
+     *
+     * @Given /^that the body is valid JSON$/
+     */
+    public function thatTheBodyIsValidJson(PyStringNode $data)
+    {
+        if (json_decode((string)$data) === null) {
+            throw new Exception('The input is not a valid JSON.');
+        }
+        $this->thatHeaderPropertyIs('Content-Type', 'application/json');
+        $this->thatTheBodyIs($data);
+    }
+
+    /**
      * Allows to specify properties using a tabular form.
      * The table is expected to have two columns:
      * the first contains the "property" name and the second the property "value".
