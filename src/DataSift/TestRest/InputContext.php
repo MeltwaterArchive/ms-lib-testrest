@@ -190,7 +190,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
                     }
                 } else {
                     // append the properties to the ones specified in the URL
-                    $url .= '&';
+                    if (substr($url, -1) != '&') {
+                        $url .= '&';
+                    }
                 }
                 $url .= http_build_query($body, '', '&');
             }
