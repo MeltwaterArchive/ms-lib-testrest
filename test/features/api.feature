@@ -91,9 +91,9 @@ Scenario: Test RAW input file data
 
 Scenario: Test input properties in tabular form
     Given that the properties in the "TABLE"
-    | property    | value            |
-    | name        | Nicola           |
-    | email       | name@example.com |
+        | property    | value            |
+        | name        | Nicola           |
+        | email       | name@example.com |
     When I make a "GET" request to "/"
     Then echo last response
     Then the response status code should be "200"
