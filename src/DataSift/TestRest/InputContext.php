@@ -182,8 +182,17 @@ class InputContext extends \DataSift\TestRest\BaseContext
         }
         if (in_array($method, array('get', 'head', 'delete'))) {
             $url = $this->requestUrl;
-            if (is_array($body)) {
-                $url .= '?'.http_build_query($body, '', '&');
+            // add query properties (if any)
+            if (!empty($body) && is_array($body)) {
+                if (parse_url($url, PHP_URL_QUERY) == null) {
+                    if (substr($url, -1) != '?') {
+                        $url .= '?';
+                    }
+                } else {
+                    // append the properties to the ones specified in the URL
+                    $url .= '&';
+                }
+                $url .= http_build_query($body, '', '&');
             }
             $this->response = $this->client->$method($url)->send();
         } elseif (in_array($method, array('post', 'put', 'patch'))) {
