@@ -19,6 +19,7 @@ namespace DataSift\TestRest;
 
 use \DataSift\TestRest\Exception;
 use \Behat\Gherkin\Node\PyStringNode;
+use \Behat\Gherkin\Node\TableNode;
 
 /**
  * DataSift\TestRest\InputContext
@@ -51,8 +52,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
     /**
      * Assign a value to a property.
      *
-     * Example:
-     *     Given that "property.name" is "12345"
+     * Examples:
+     *     Given that "property_name" is "12345"
+     *     And that "data[0].name" is "alpha"
      *
      * @Given /^that "([^"]*)" is "([^\n]*)"$/
      */
@@ -83,35 +85,15 @@ class InputContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
-     * Load several input values at once using JSON syntax.
-     * NOTE: the data will be converted to an array of values.
-     *
-     * Example:
-     *     Given that input JSON data is
-     *     """
-     *     {
-     *          "field":"value",
-     *          "count":1
-     *     }
-     *     """
-     *
-     * @Given /^that input JSON data is$/
-     */
-    public function thatInputJsonDataIs(PyStringNode $json)
-    {
-        $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
-    }
-
-    /**
      * Load several input values at once by reading the data from a JSON file.
      * NOTE: the data will be converted to an array of values.
      *
      * Example:
-     *     Given that input JSON data file is "/tmp/data.json"
+     *     Given that the properties are imported from the JSON file "/tmp/data.json"
      *
-     * @Given /^that input JSON data file is "([^"]*)"$/
+     * @Given /^that the properties are imported from the JSON file "([^"]*)"$/
      */
-    public function thatInputJsonDataFileIs($file)
+    public function thatThePropertiesAreImportedFromTheJsonFile($file)
     {
         if (!is_readable($file)) {
             throw new Exception('Unable to read the JSON file: '.$file);
@@ -119,13 +101,43 @@ class InputContext extends \DataSift\TestRest\BaseContext
         $json = file_get_contents($file);
         $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
     }
+    
 
     /**
-     * Overwrites the message body payload using the specified string.
+     * Overwrites the body payload with the content of the specified file.
      * For example, it can be used to send a raw JSON string.
      *
      * Example:
-     *     Given that input RAW data is
+     *     Given that the body is imported from the file "/tmp/data.txt"
+     *
+     * @Given /^that the body is imported from the file "([^"]*)"$/
+     */
+    public function thatTheBodyIsImportedFromTheFile($file)
+    {
+        if (!is_readable($file)) {
+            throw new Exception('Unable to read the text file: '.$file);
+        }
+        $this->restObj = file_get_contents($file);
+    }
+
+    /**
+     * Overwrites the message body payload using the specified string.
+     * For example, it can be used to send a binary, XML or JSON string.
+     *
+     * Examples:
+     *
+     *     Given that the body is
+     *     """
+     *     ajweriwerio328423947uhdiuqwdh2387ye372r23g7qed237g23e237e
+     *     """
+     *
+     *     Given that the body is
+     *     """
+     *     <name>Hello</name>
+     *     <email>name@example.com</email>
+     *     """
+     *
+     *     Given that the body is
      *     """
      *     {
      *          "field":"value",
@@ -133,28 +145,85 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *     }
      *     """
      *
-     * @Given /^that input RAW data is$/
+     * @Given /^that the body is$/
      */
-    public function thatInputRawDataIs(PyStringNode $data)
+    public function thatTheBodyIs(PyStringNode $data)
     {
         $this->restObj = (string)$data;
     }
 
     /**
-     * Overwrites the body payload with the content of the specified file.
-     * For example, it can be used to send a raw JSON string.
+     * Allows to specify properties using a tabular form.
+     * The table is expected to have two columns:
+     * the first contains the "property" name and the second the property "value".
      *
-     * Example:
-     *     Given that input RAW data file is "/tmp/data.txt"
-     *
-     * @Given /^that input RAW data file is "([^"]*)"$/
+     * @param TableNode $table Input data table
      */
-    public function thatInputRawDataFileIs($file)
+    protected function thatThePropertiesInTheTable(TableNode $table)
     {
-        if (!is_readable($file)) {
-            throw new Exception('Unable to read the text file: '.$file);
+        $hash = $table->getHash();
+        foreach ($hash as $row) {
+            $this->thatPropertyIs($row['property'], $row['value']);
         }
-        $this->restObj = file_get_contents($file);
+    }
+
+    /**
+     * Load several input values at once using JSON syntax.
+     * NOTE: the data will be converted iternally to property-value items.
+     *
+     * @param PyStringNode $json input JSON
+     */
+    protected function thatThePropertiesInTheJson(PyStringNode $json)
+    {
+        $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
+    }
+
+    /**
+     * Allows to specify properties using a tabular (TABLE) form or a JSON.
+     *
+     * The TABLE form is recommended when the input data is a long list of property-value items.
+     * The JSON format is recommended when multiple input properties are nested in a complex structure.
+     *
+     * In any case the input data provided will be internally converted in property-value items.
+     *
+     * The table is expected to have two columns:
+     * the first contains the "property" name and the second the property "value".
+     *
+     * TABLE Example:
+     *     Given that the properties in the "TABLE"
+     *     | property    | value            |
+     *     | name        | Nicola           |
+     *     | email       | name@example.com |
+     *
+     * JSON Example:
+     *     Given that the properties in the "JSON"
+     *     """
+     *     {
+     *          "field":"value",
+     *          "data": {
+     *              "codes": [
+     *                  "alpha",
+     *                  "beta",
+     *                  "gamma"
+     *              ]
+     *          }
+     *     }
+     *     """
+     * 
+     * @Given /^that the properties in the "(TABLE|JSON)"$/
+     */
+    public function thatThePropertiesInThe($type, $data)
+    {
+        // @todo ...
+        if ($type == 'TABLE') {
+            $table = new TableNode($data);
+            return $this->thatThePropertiesInTheTable($table);
+        }
+        if ($type == 'JSON') {
+            $json = new PyStringNode($data);
+            return $this->thatThePropertiesInTheJson($json);
+        }
+        throw new Exception('Invalid type: '.$type.'; only "TABLE" and "JSON" are valid.');
     }
 
     /**
@@ -184,21 +253,33 @@ class InputContext extends \DataSift\TestRest\BaseContext
             $url = $this->requestUrl;
             // add query properties (if any)
             if (!empty($body) && is_array($body)) {
-                if (parse_url($url, PHP_URL_QUERY) == null) {
-                    if (substr($url, -1) != '?') {
-                        $url .= '?';
-                    }
-                } else {
-                    // append the properties to the ones specified in the URL
-                    if (substr($url, -1) != '&') {
-                        $url .= '&';
-                    }
-                }
-                $url .= http_build_query($body, '', '&');
+                $url .= $this->getUrlQuerySeparator($url).http_build_query($body, '', '&');
             }
             $this->response = $this->client->$method($url)->send();
         } elseif (in_array($method, array('post', 'put', 'patch'))) {
             $this->response = $this->client->$method($this->requestUrl, $headers, $body)->send();
         }
+    }
+
+    /**
+     * Get the first URL query separator ('?' or '&')
+     *
+     * @param string $url URL to parse
+     *
+     * @return string
+     */
+    protected function getUrlQuerySeparator($url)
+    {
+        if (parse_url($url, PHP_URL_QUERY) == null) {
+            if (substr($url, -1) != '?') {
+                return '?';
+            }
+        } else {
+            // append the properties to the ones specified in the URL
+            if (substr($url, -1) != '&') {
+                return '&';
+            }
+        }
+        return '';
     }
 }

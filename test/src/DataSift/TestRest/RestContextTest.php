@@ -105,36 +105,36 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatInputJsonDataIs($json);
     }
 
-    public function testThatInputRawDataIs()
+    public function testthatTheBodyIs()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
-        $this->obj->thatInputRawDataIs($json);
+        $this->obj->thatTheBodyIs($json);
     }
 
-    public function testThatInputJsonDataFileIs()
+    public function testthatThePropertiesAreImportedFromTheJsonFile()
     {
         $file = 'test/resources/data.json';
-        $this->obj->thatInputJsonDataFileIs($file);
+        $this->obj->thatThePropertiesAreImportedFromTheJsonFile($file);
     }
 
-    public function testThatInputJsonDataFileIsException()
+    public function testthatThePropertiesAreImportedFromTheJsonFileException()
     {
         $this->setExpectedException('Exception');
         $file = 'test/resources/error.json';
-        $this->obj->thatInputJsonDataFileIs($file);
+        $this->obj->thatThePropertiesAreImportedFromTheJsonFile($file);
     }
 
-    public function testThatInputRawDataFileIs()
+    public function testthatTheBodyIsImportedFromTheFile()
     {
         $file = 'test/resources/data.json';
-        $this->obj->thatInputRawDataFileIs($file);
+        $this->obj->thatTheBodyIsImportedFromTheFile($file);
     }
 
-    public function testThatInputRawDataFileIsException()
+    public function testthatTheBodyIsImportedFromTheFileException()
     {
         $this->setExpectedException('Exception');
         $file = 'test/resources/error.json';
-        $this->obj->thatInputRawDataFileIs($file);
+        $this->obj->thatTheBodyIsImportedFromTheFile($file);
     }
 
     public function testIRequest()

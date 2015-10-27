@@ -2,10 +2,9 @@ Feature: Testing if the API is responding
 
 Scenario: Simple test that show all options
     Given that header property "Test" is "12345"
-    Given that "property[0].name" is "12345"
-    # NOTE: The following loads data from a JSON file and converts it into array format.
-    #       To load a raw JSON string, use "Given that input RAW data is" as shown below
-    Given that input JSON data is
+    And that "property[0].name" is "12345"
+    # NOTE: The following loads data from a JSON file and converts it into property-value items
+    Given that the properties in the "JSON"
     """
     {
         "alpha":"beta",
@@ -15,7 +14,7 @@ Scenario: Simple test that show all options
     }
     """
     # The following loads data from a JSON file and merge it with the existing one
-    Given that input JSON data file is "test/resources/data.json"
+    Given that the properties are imported from the JSON file "test/resources/data.json"
     When I make a "GET" request to "/"
     Then echo last response
     Then wait "1" second
@@ -53,7 +52,7 @@ Scenario Outline: Test data table mode
         | bravo |  200 | true    |
 
 Scenario: Test Raw data
-    Given that input RAW data is
+    Given that the body is
     """
     {
         "alpha":"beta",
@@ -69,8 +68,22 @@ Scenario: Test Raw data
 
 Scenario: Test RAW input file data
     # load RAW data from a file
-    Given that input RAW data file is "test/resources/data.json"
+    Given that the body is imported from the file "test/resources/data.json"
     When I make a "POST" request to "/"
     Then the response status code should be "200"
     Then the "success" property equals "true"
     Then the response has a "raw" property
+
+Scenario: Test input properties in tabular form
+    Given that the properties in the "TABLE"
+    | property    | value            |
+    | name        | Nicola           |
+    | email       | name@example.com |
+    When I make a "GET" request to "/"
+    Then echo last response
+    Then the response status code should be "200"
+    Then the "success" property equals "true"
+    Then the "data.name" property equals "Nicola"
+    Then the "data.email" property equals "name@example.com"
+    Then the response has a "raw" property
+
