@@ -209,7 +209,7 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *          }
      *     }
      *     """
-     * 
+     *
      * @Given /^that the properties in the "(TABLE|JSON)"$/
      */
     public function thatThePropertiesInThe($type, $data)
