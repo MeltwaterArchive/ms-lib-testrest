@@ -108,11 +108,11 @@ class InputContext extends \DataSift\TestRest\BaseContext
      * For example, it can be used to send a raw JSON string.
      *
      * Example:
-     *     Given that the body is imported from the file "/tmp/data.txt"
+     *     Given that the request body is imported from the file "/tmp/data.txt"
      *
-     * @Given /^that the body is imported from the file "([^"]*)"$/
+     * @Given /^that the request body is imported from the file "([^"]*)"$/
      */
-    public function thatTheBodyIsImportedFromTheFile($file)
+    public function thatTheRequestBodyIsImportedFromTheFile($file)
     {
         if (!is_readable($file)) {
             throw new Exception('Unable to read the text file: '.$file);
@@ -126,18 +126,18 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *
      * Examples:
      *
-     *     Given that the body is
+     *     Given that the request body is
      *     """
      *     ajweriwerio328423947uhdiuqwdh2387ye372r23g7qed237g23e237e
      *     """
      *
-     *     Given that the body is
+     *     Given that the request body is
      *     """
      *     <name>Hello</name>
      *     <email>name@example.com</email>
      *     """
      *
-     *     Given that the body is
+     *     Given that the request body is
      *     """
      *     {
      *          "field":"value",
@@ -145,9 +145,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *     }
      *     """
      *
-     * @Given /^that the body is$/
+     * @Given /^that the request body is$/
      */
-    public function thatTheBodyIs(PyStringNode $data)
+    public function thatTheRequestBodyIs(PyStringNode $data)
     {
         $this->restObj = (string)$data;
     }
@@ -174,7 +174,7 @@ class InputContext extends \DataSift\TestRest\BaseContext
             throw new Exception('The input is not a valid JSON.');
         }
         $this->thatHeaderPropertyIs('Content-Type', 'application/json');
-        $this->thatTheBodyIs($data);
+        $this->thatTheRequestBodyIs($data);
     }
 
     /**

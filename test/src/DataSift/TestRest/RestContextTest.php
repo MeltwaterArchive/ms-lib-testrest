@@ -130,10 +130,10 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatThePropertiesInThe('ERROR', '');
     }
 
-    public function testthatTheBodyIs()
+    public function testthatTheRequestBodyIs()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
-        $this->obj->thatTheBodyIs($json);
+        $this->obj->thatTheRequestBodyIs($json);
     }
 
     public function testthatThePropertiesAreImportedFromTheJsonFile()
@@ -149,17 +149,17 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatThePropertiesAreImportedFromTheJsonFile($file);
     }
 
-    public function testthatTheBodyIsImportedFromTheFile()
+    public function testthatTheRequestBodyIsImportedFromTheFile()
     {
         $file = 'test/resources/data.json';
-        $this->obj->thatTheBodyIsImportedFromTheFile($file);
+        $this->obj->thatTheRequestBodyIsImportedFromTheFile($file);
     }
 
-    public function testthatTheBodyIsImportedFromTheFileException()
+    public function testthatTheRequestBodyIsImportedFromTheFileException()
     {
         $this->setExpectedException('Exception');
         $file = 'test/resources/error.json';
-        $this->obj->thatTheBodyIsImportedFromTheFile($file);
+        $this->obj->thatTheRequestBodyIsImportedFromTheFile($file);
     }
 
     public function testIRequest()

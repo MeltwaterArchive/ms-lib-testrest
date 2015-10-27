@@ -67,7 +67,7 @@ Scenario Outline: Test data table mode
         | bravo |  200 | true    |
 
 Scenario: Test Raw data
-    Given that the body is
+    Given that the request body is
     """
     {
         "alpha":"beta",
@@ -83,7 +83,7 @@ Scenario: Test Raw data
 
 Scenario: Test RAW input file data
     # load RAW data from a file
-    Given that the body is imported from the file "test/resources/data.json"
+    Given that the request body is imported from the file "test/resources/data.json"
     When I make a "POST" request to "/"
     Then the response status code should be "200"
     Then the "success" property equals "true"
