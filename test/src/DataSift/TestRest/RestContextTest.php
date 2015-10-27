@@ -99,10 +99,35 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatPropertyIs('one[3].two', '1.23');
     }
 
-    public function thatThePropertiesInThe()
+    public function testThatTheBodyIsValidJson()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
+        $this->obj->thatTheBodyIsValidJson($json);
+    }
+
+    public function testThatTheBodyIsValidJsonEx()
+    {
+        $this->setExpectedException('Exception');
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world', 1);
+        $this->obj->thatTheBodyIsValidJson($json);
+    }
+
+    public function testThatThePropertiesInTheJson()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
         $this->obj->thatThePropertiesInThe('JSON', $json);
+    }
+
+    public function testThatThePropertiesInTheTable()
+    {
+        $table = new \Behat\Gherkin\Node\TableNode("|property|value|\n|alpha|beta|\n|gamma|delta|");
+        $this->obj->thatThePropertiesInThe('TABLE', $table);
+    }
+
+    public function testThatThePropertiesInTheEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thatThePropertiesInThe('ERROR', '');
     }
 
     public function testthatTheBodyIs()

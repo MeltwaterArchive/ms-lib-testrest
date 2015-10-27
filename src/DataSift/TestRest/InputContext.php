@@ -292,16 +292,17 @@ class InputContext extends \DataSift\TestRest\BaseContext
      */
     protected function getUrlQuerySeparator($url)
     {
+        $sep = '';
         if (parse_url($url, PHP_URL_QUERY) == null) {
             if (substr($url, -1) != '?') {
-                return '?';
+                $sep = '?';
             }
         } else {
             // append the properties to the ones specified in the URL
             if (substr($url, -1) != '&') {
-                return '&';
+                $sep = '&';
             }
         }
-        return '';
+        return $sep;
     }
 }
