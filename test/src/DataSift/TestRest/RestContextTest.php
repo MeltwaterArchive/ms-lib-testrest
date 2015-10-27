@@ -102,14 +102,14 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
     public function testThatTheBodyIsValidJson()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
-        $this->obj->thatTheBodyIsValidJson($json);
+        $this->obj->thatTheRequestBodyIsValidJson($json);
     }
 
     public function testThatTheBodyIsValidJsonEx()
     {
         $this->setExpectedException('Exception');
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world', 1);
-        $this->obj->thatTheBodyIsValidJson($json);
+        $this->obj->thatTheRequestBodyIsValidJson($json);
     }
 
     public function testThatThePropertiesInTheJson()

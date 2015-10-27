@@ -1,7 +1,7 @@
 Feature: Testing if the API is responding
 
 Scenario: Test JSON data
-    Given that the body is valid JSON
+    Given that the request body is valid JSON
     """
     {
         "alpha":"beta",

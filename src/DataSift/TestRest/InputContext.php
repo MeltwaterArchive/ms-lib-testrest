@@ -158,7 +158,7 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *
      * Example:
      *
-     *     Given that the body is valid JSON
+     *     Given that the request body is valid JSON
      *     """
      *     {
      *          "field":"value",
@@ -166,9 +166,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *     }
      *     """
      *
-     * @Given /^that the body is valid JSON$/
+     * @Given /^that the request body is valid JSON$/
      */
-    public function thatTheBodyIsValidJson(PyStringNode $data)
+    public function thatTheRequestBodyIsValidJson(PyStringNode $data)
     {
         if (json_decode((string)$data) === null) {
             throw new Exception('The input is not a valid JSON.');
