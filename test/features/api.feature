@@ -1,5 +1,20 @@
 Feature: Testing if the API is responding
 
+Scenario: Test JSON data
+    Given that the request body is valid JSON
+    """
+    {
+        "alpha":"beta",
+        "gamma":"delta",
+        "count":3,
+        "collection":["a","b","c"]
+    }
+    """
+    When I make a "POST" request to "/"
+    Then echo last response
+    Then the response status code should be "200"
+    Then the "success" property equals "true"
+    
 Scenario: Simple test that show all options
     Given that header property "Test" is "12345"
     And that "property[0].name" is "12345"
@@ -52,7 +67,7 @@ Scenario Outline: Test data table mode
         | bravo |  200 | true    |
 
 Scenario: Test Raw data
-    Given that the body is
+    Given that the request body is
     """
     {
         "alpha":"beta",
@@ -68,7 +83,7 @@ Scenario: Test Raw data
 
 Scenario: Test RAW input file data
     # load RAW data from a file
-    Given that the body is imported from the file "test/resources/data.json"
+    Given that the request body is imported from the file "test/resources/data.json"
     When I make a "POST" request to "/"
     Then the response status code should be "200"
     Then the "success" property equals "true"
@@ -76,9 +91,9 @@ Scenario: Test RAW input file data
 
 Scenario: Test input properties in tabular form
     Given that the properties in the "TABLE"
-    | property    | value            |
-    | name        | Nicola           |
-    | email       | name@example.com |
+        | property    | value            |
+        | name        | Nicola           |
+        | email       | name@example.com |
     When I make a "GET" request to "/"
     Then echo last response
     Then the response status code should be "200"

@@ -108,11 +108,11 @@ class InputContext extends \DataSift\TestRest\BaseContext
      * For example, it can be used to send a raw JSON string.
      *
      * Example:
-     *     Given that the body is imported from the file "/tmp/data.txt"
+     *     Given that the request body is imported from the file "/tmp/data.txt"
      *
-     * @Given /^that the body is imported from the file "([^"]*)"$/
+     * @Given /^that the request body is imported from the file "([^"]*)"$/
      */
-    public function thatTheBodyIsImportedFromTheFile($file)
+    public function thatTheRequestBodyIsImportedFromTheFile($file)
     {
         if (!is_readable($file)) {
             throw new Exception('Unable to read the text file: '.$file);
@@ -126,18 +126,18 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *
      * Examples:
      *
-     *     Given that the body is
+     *     Given that the request body is
      *     """
      *     ajweriwerio328423947uhdiuqwdh2387ye372r23g7qed237g23e237e
      *     """
      *
-     *     Given that the body is
+     *     Given that the request body is
      *     """
      *     <name>Hello</name>
      *     <email>name@example.com</email>
      *     """
      *
-     *     Given that the body is
+     *     Given that the request body is
      *     """
      *     {
      *          "field":"value",
@@ -145,11 +145,36 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *     }
      *     """
      *
-     * @Given /^that the body is$/
+     * @Given /^that the request body is$/
      */
-    public function thatTheBodyIs(PyStringNode $data)
+    public function thatTheRequestBodyIs(PyStringNode $data)
     {
         $this->restObj = (string)$data;
+    }
+
+    /**
+     * Overwrites the message body payload wih the provided JSON string
+     * and set the Content-Type to "application/json".
+     *
+     * Example:
+     *
+     *     Given that the request body is valid JSON
+     *     """
+     *     {
+     *          "field":"value",
+     *          "count":1
+     *     }
+     *     """
+     *
+     * @Given /^that the request body is valid JSON$/
+     */
+    public function thatTheRequestBodyIsValidJson(PyStringNode $data)
+    {
+        if (json_decode((string)$data) === null) {
+            throw new Exception('The input is not a valid JSON.');
+        }
+        $this->thatHeaderPropertyIs('Content-Type', 'application/json');
+        $this->thatTheRequestBodyIs($data);
     }
 
     /**
@@ -209,19 +234,16 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *          }
      *     }
      *     """
-     * 
+     *
      * @Given /^that the properties in the "(TABLE|JSON)"$/
      */
     public function thatThePropertiesInThe($type, $data)
     {
-        // @todo ...
-        if ($type == 'TABLE') {
-            $table = new TableNode($data);
-            return $this->thatThePropertiesInTheTable($table);
+        if (($type == 'TABLE') && ($data instanceof TableNode)) {
+            return $this->thatThePropertiesInTheTable($data);
         }
-        if ($type == 'JSON') {
-            $json = new PyStringNode($data);
-            return $this->thatThePropertiesInTheJson($json);
+        if (($type == 'JSON') && ($data instanceof PyStringNode)) {
+            return $this->thatThePropertiesInTheJson($data);
         }
         throw new Exception('Invalid type: '.$type.'; only "TABLE" and "JSON" are valid.');
     }
@@ -270,16 +292,17 @@ class InputContext extends \DataSift\TestRest\BaseContext
      */
     protected function getUrlQuerySeparator($url)
     {
+        $sep = '';
         if (parse_url($url, PHP_URL_QUERY) == null) {
             if (substr($url, -1) != '?') {
-                return '?';
+                $sep = '?';
             }
         } else {
             // append the properties to the ones specified in the URL
             if (substr($url, -1) != '&') {
-                return '&';
+                $sep = '&';
             }
         }
-        return '';
+        return $sep;
     }
 }
