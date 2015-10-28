@@ -34,10 +34,13 @@ use \Behat\Gherkin\Node\TableNode;
 class InputContext extends \DataSift\TestRest\BaseContext
 {
     /**
-     * Assign a value to a header property.
+     * Assign a value to a request header property.
      *
      * Example:
      *     Given that header property "Test" is "12345"
+     *
+     * @param string $propertyName  Name of the header property to set
+     * @param string $propertyValue Value of the header property
      *
      * @Given /^that header property "([^"]*)" is "([^\n]*)"$/
      */
@@ -55,6 +58,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
      * Examples:
      *     Given that "property_name" is "12345"
      *     And that "data[0].name" is "alpha"
+     *
+     * @param string $propertyName  Name of the property to set
+     * @param string $propertyValue Value of the property
      *
      * @Given /^that "([^"]*)" is "([^\n]*)"$/
      */
@@ -85,11 +91,13 @@ class InputContext extends \DataSift\TestRest\BaseContext
     }
 
     /**
-     * Load several input values at once by reading the data from a JSON file.
-     * NOTE: the data will be converted to an array of values.
+     * Load several input property values at once by reading the data from a JSON file.
+     * NOTE: the data will be internally converted to property-value items.
      *
      * Example:
      *     Given that the properties are imported from the JSON file "/tmp/data.json"
+     *
+     * @param string $file Name and path of the file containing the source data in JSON format.
      *
      * @Given /^that the properties are imported from the JSON file "([^"]*)"$/
      */
@@ -99,16 +107,17 @@ class InputContext extends \DataSift\TestRest\BaseContext
             throw new Exception('Unable to read the JSON file: '.$file);
         }
         $json = file_get_contents($file);
-        $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
+        $this->thatThePropertiesInTheJson($json);
     }
-    
 
     /**
      * Overwrites the body payload with the content of the specified file.
-     * For example, it can be used to send a raw JSON string.
+     * For example, it can be used to send a binary, XML or JSON string.
      *
      * Example:
      *     Given that the request body is imported from the file "/tmp/data.txt"
+     *
+     * @param string $file Name and path of the file containing the source data.
      *
      * @Given /^that the request body is imported from the file "([^"]*)"$/
      */
@@ -145,6 +154,8 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *     }
      *     """
      *
+     * @param PyStringNode $data Request body content.
+     *
      * @Given /^that the request body is$/
      */
     public function thatTheRequestBodyIs(PyStringNode $data)
@@ -166,6 +177,8 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *     }
      *     """
      *
+     * @param PyStringNode $data Request body content in JSON format.
+     *
      * @Given /^that the request body is valid JSON$/
      */
     public function thatTheRequestBodyIsValidJson(PyStringNode $data)
@@ -180,15 +193,14 @@ class InputContext extends \DataSift\TestRest\BaseContext
     /**
      * Allows to specify properties using a tabular form.
      * The table is expected to have two columns:
-     * the first contains the "property" name and the second the property "value".
+     * the first column contains the property name and the second the property value.
      *
      * @param TableNode $table Input data table
      */
     protected function thatThePropertiesInTheTable(TableNode $table)
     {
-        $hash = $table->getHash();
-        foreach ($hash as $row) {
-            $this->thatPropertyIs($row['property'], $row['value']);
+        foreach ($table->getRows() as $row) {
+            $this->thatPropertyIs($row[0], $row[1]);
         }
     }
 
@@ -196,15 +208,15 @@ class InputContext extends \DataSift\TestRest\BaseContext
      * Load several input values at once using JSON syntax.
      * NOTE: the data will be converted iternally to property-value items.
      *
-     * @param PyStringNode $json input JSON
+     * @param string $json JSON string containing the property values.
      */
-    protected function thatThePropertiesInTheJson(PyStringNode $json)
+    protected function thatThePropertiesInTheJson($json)
     {
         $this->restObj = (object)array_merge((array)$this->restObj, json_decode($json, true));
     }
 
     /**
-     * Allows to specify properties using a tabular (TABLE) form or a JSON.
+     * Allows to specify properties using a tabular form (TABLE) or JSON.
      *
      * The TABLE form is recommended when the input data is a long list of property-value items.
      * The JSON format is recommended when multiple input properties are nested in a complex structure.
@@ -212,11 +224,10 @@ class InputContext extends \DataSift\TestRest\BaseContext
      * In any case the input data provided will be internally converted in property-value items.
      *
      * The table is expected to have two columns:
-     * the first contains the "property" name and the second the property "value".
+     * the first column contains the property name and the second the property value.
      *
      * TABLE Example:
      *     Given that the properties in the "TABLE"
-     *     | property    | value            |
      *     | name        | Nicola           |
      *     | email       | name@example.com |
      *
@@ -234,6 +245,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
      *          }
      *     }
      *     """
+     *
+     * @param string $type Type of input data (TABLE or JSON).
+     * @param string $data String containing the data to be parsed.
      *
      * @Given /^that the properties in the "(TABLE|JSON)"$/
      */
@@ -255,6 +269,9 @@ class InputContext extends \DataSift\TestRest\BaseContext
      * Example:
      *     When I make a "POST" request to "/my/api/entry/point"
      *     When I make a "GET" request to "/my/api/entry/point"
+     *
+     * @param string $method  HTTP method (POST|PUT|PATCH|GET|HEAD|DELETE).
+     * @param string $pageUrl URL of the RESTful service to test.
      *
      * @When /^I make a "(POST|PUT|PATCH|GET|HEAD|DELETE)" request to "([^"]*)"$/
      */

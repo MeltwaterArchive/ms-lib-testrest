@@ -160,12 +160,13 @@ class BaseContext extends BehatContext
     }
 
     /**
-     *
      * Delays the program execution for the given number of seconds.
      *
      * Examples:
      *     Then wait "1" second
      *     Then wait "3" seconds
+     *
+     * @param int $delay Halt time in seconds.
      *
      * @Then /^wait "(\d+)" second[s]?$/
      */
@@ -185,5 +186,33 @@ class BaseContext extends BehatContext
     public function echoLastResponse()
     {
         $this->printDebug($this->requestUrl."\n\n".$this->response);
+    }
+
+    /**
+     * Returns the difference of two arrays
+     *
+     * @param array $arr1 The array to compare from.
+     * @param array $arr2 The array to compare against.
+     *
+     * @return array Returns an array containing all the entries from $arr1 that are not present in $arr2.
+     */
+    protected function getArrayDiff(array $arr1, array $arr2)
+    {
+        $diff = array();
+        foreach ($arr1 as $key => $val) {
+            if (array_key_exists($key, $arr2)) {
+                if (is_array($val)) {
+                    $tmpdiff = $this->getArrayDiff($val, $arr2[$key]);
+                    if (!empty($tmpdiff)) {
+                        $diff[$key] = $tmpdiff;
+                    }
+                } elseif ($arr2[$key] != $val) {
+                    $diff[$key] = $val;
+                }
+            } elseif (!is_int($key) || !in_array($val, $arr2)) {
+                $diff[$key] = $val;
+            }
+        }
+        return $diff;
     }
 }

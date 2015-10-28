@@ -105,6 +105,33 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatTheRequestBodyIsValidJson($json);
     }
 
+    public function testTheResponseBodyEquals()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"echo":"foxtrot","\"quote\"":true}}',
+            1
+        );
+        $this->obj->theResponseBodyEquals($json);
+    }
+
+    public function testTheResponseBodyEqualsEx()
+    {
+        $this->setExpectedException('Exception');
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
+        $this->obj->theResponseBodyEquals($json);
+    }
+
+    public function testTheResponseBodyMatchThePattern()
+    {
+        $this->obj->theResponseBodyMatchThePattern('/fox[a-z]{4}/');
+    }
+
+    public function testTheResponseBodyMatchThePatternEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theResponseBodyMatchThePattern('/[~]{10}/');
+    }
+
     public function testThatTheBodyIsValidJsonEx()
     {
         $this->setExpectedException('Exception');
@@ -219,6 +246,25 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $mockResponse->setBody('simple text', 'application/text');
         $this->setPropertyValue('response', $mockResponse);
         $this->obj->getResponseData();
+    }
+
+    public function testTheResponseBodyContainsTheJsonData()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"echo":"foxtrot","\"quote\"":true}}',
+            1
+        );
+        $this->obj->theResponseBodyContainsTheJsonData($json);
+    }
+
+    public function testTheResponseBodyContainsTheJsonDataEx()
+    {
+        $this->setExpectedException('Exception');
+        $json = new \Behat\Gherkin\Node\PyStringNode(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"\"quote\"":false,"missing":true}}',
+            1
+        );
+        $this->obj->theResponseBodyContainsTheJsonData($json);
     }
 
     public function testGetObjectValue()
