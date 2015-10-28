@@ -18,6 +18,7 @@
 namespace DataSift\TestRest;
 
 use \DataSift\TestRest\Exception;
+use \Behat\Gherkin\Node\PyStringNode;
 
 /**
  * DataSift\TestRest\RestContext
@@ -37,6 +38,8 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Example:
      *     Then the response status code should be "200"
      *
+     * @param int $httpStatus Expected HTTP status code.
+     *
      * @Then /^the response status code should be "(\d+)"$/
      */
     public function theResponseStatusCodeShouldBe($httpStatus)
@@ -50,7 +53,31 @@ class RestContext extends \DataSift\TestRest\InputContext
     }
 
     /**
-     * Verify if the response is in JSON format.
+     * Check if the response body content correspond to the specified string.
+     *
+     * Examples:
+     *     Then the the response body equals
+     *     """
+     *     name@example.com
+     *     """
+     *
+     * @param PyStringNode $value Expected response body content.
+     *
+     * @Then /^the response body equals$/
+     */
+    public function theResponseBodyEquals(PyStringNode $value)
+    {
+        $data = trim($this->response->getBody(true));
+        $value = trim((string)$value);
+        if ($value !== $data) {
+            throw new Exception('Response body value mismatch! (given: '.$value.', match: '.$data.')');
+        }
+    }
+
+    // === NOTE: THE FOLLOWING METHODS ASSUME THAT THE RESPONSE IS A JSON ===
+    
+    /**
+     * Verify if the response is in valid JSON format.
      *
      * Example:
      *     Then the response is JSON
@@ -71,6 +98,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      *
      * Example:
      *     Then the "Connection" header property equals "close"
+     *
+     * @param string $propertyName  Name of the header property to check.
+     * @param string $propertyValue Expected value of the header property.
      *
      * @Then /^the "([^"]+)" header property equals "([^\n]*)"$/
      */
@@ -93,6 +123,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      *     Then the type of the "field.name" property should be "string"
      *     Then the type of the "field.count" property should be "integer"
      *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $type          Expected type of the property (boolean, integer, double, float, string, array)
+     *
      * @Then /^the type of the "([^"]*)" property should be "([^"]+)"$/
      */
     public function theTypeOfThePropertyShouldBe($propertyName, $type)
@@ -114,6 +147,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Examples:
      *     Then the "success" property equals "true"
      *     Then the "database[0].hostname" property equals "127.0.0.1"
+     *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $propertyValue Expected value of the property.
      *
      * @Then /^the "([^"]+)" property equals "([^\n]*)"$/
      */
@@ -155,6 +191,10 @@ class RestContext extends \DataSift\TestRest\InputContext
      *     Then the "data" property is an "array" with "5" items
      *     Then the "data" property is an "object" with "10" items
      *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $type          Type of property ("array" or "object").
+     * @param string $numitems      Expected number of elements in the array or object.
+     *
      * @Then /^the "([^"]*)" property is an "(array|object)" with "(null|\d+)" item[s]?$/
      */
     public function thePropertyIsAnWithItems($propertyName, $type, $numitems)
@@ -179,6 +219,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Example:
      *     Then the length of the "datetime" property should be "19"
      *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $type          Expected string length of the property.
+     *
      * @Then /^the length of the "([^"]*)" property should be "(\d+)"$/
      */
     public function theLengthOfThePropertyShouldBe($propertyName, $length)
@@ -197,7 +240,10 @@ class RestContext extends \DataSift\TestRest\InputContext
      *
      * Example:
      *     Then the value of the "datetime" property should match the pattern
-     *     "^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$"
+     *     "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
+     *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $pattern       Expected regular expression pattern of the property.
      *
      * @Then /^the value of the "([^"]*)" property should match the pattern "([^\n]*)"$/
      */
@@ -220,8 +266,8 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Example:
      *     Then the response has a "field.name" property
      *
-     * @param string   $property  Dot-separated property name
-     * @param StdClass $obj       Object to process
+     * @param string   $property  Property name in dot-separated format.
+     * @param StdClass $obj       Object to process.
      *
      * @return Object value
      *

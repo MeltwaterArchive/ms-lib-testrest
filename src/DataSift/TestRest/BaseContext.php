@@ -160,12 +160,13 @@ class BaseContext extends BehatContext
     }
 
     /**
-     *
      * Delays the program execution for the given number of seconds.
      *
      * Examples:
      *     Then wait "1" second
      *     Then wait "3" seconds
+     *
+     * @param int $delay Halt time in seconds.
      *
      * @Then /^wait "(\d+)" second[s]?$/
      */
