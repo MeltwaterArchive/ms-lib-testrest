@@ -40,6 +40,7 @@ Scenario: Simple test that show all options
     And the type of the "success" property should be "boolean"
     And the "success" property equals "true"
     And the value of the "datetime" property should match the pattern "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
+    And the response body match the pattern "/[\"]ga[m]{2}a[\"]/"
     And the "data" property is an "object" with "10" items
     And the "data.property" property is an "array" with "1" item
     And the "data.property[0].name" property equals "12345"
@@ -53,6 +54,11 @@ Scenario: Simple test that show all options
     And the "data.float" property equals "1.2345"
     And the "data.boolean" property equals "true"
     And the "data.array" property is an "array" with "4" items
+    # Is it possible to check the entire response body:
+    #Then the the response body equals
+    #    """
+    #    name@example.com
+    #    """
 
 Scenario Outline: Test data table mode
     Given that "property.name" is "<name>"

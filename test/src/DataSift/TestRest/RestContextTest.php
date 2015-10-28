@@ -121,6 +121,17 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->theResponseBodyEquals($json);
     }
 
+    public function testTheResponseBodyMatchThePattern()
+    {
+        $this->obj->theResponseBodyMatchThePattern('/fox[a-z]{4}/');
+    }
+
+    public function testTheResponseBodyMatchThePatternEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theResponseBodyMatchThePattern('/[~]{10}/');
+    }
+
     public function testThatTheBodyIsValidJsonEx()
     {
         $this->setExpectedException('Exception');

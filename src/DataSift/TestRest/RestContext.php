@@ -74,6 +74,27 @@ class RestContext extends \DataSift\TestRest\InputContext
         }
     }
 
+    /**
+     * Check if the provided pattern matches the response body string.
+     *
+     * Example:
+     *     Then the response body match the pattern "/[a-z]+@example\.com/"
+     *
+     * @param string $pattern Regular expression pattern to search.
+     *
+     * @Then /^the response body match the pattern "([^\n]*)"$/
+     */
+    public function theResponseBodyMatchThePattern($pattern)
+    {
+        $value = trim($this->response->getBody(true));
+        $result = preg_match($pattern, $value);
+        if (empty($result)) {
+            throw new Exception(
+                'The response body do not match the pattern \''.$pattern.'\'!'."\n"
+            );
+        }
+    }
+
     // === NOTE: THE FOLLOWING METHODS ASSUME THAT THE RESPONSE IS A JSON ===
     
     /**
