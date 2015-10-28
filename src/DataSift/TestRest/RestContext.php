@@ -115,6 +115,32 @@ class RestContext extends \DataSift\TestRest\InputContext
     }
 
     /**
+     * Check if the response body content correspond to the specified string.
+     *
+     * Examples:
+     *     the response body contains the JSON data
+     *     """
+     *     {
+     *          "field":"value",
+     *          "count":1
+     *     }
+     *     """
+     *
+     * @param PyStringNode $value JSON string containing the data expected in the response body.
+     *
+     * @Then /^the response body contains the JSON data$/
+     */
+    public function theResponseBodyContainsTheJsonData(PyStringNode $value)
+    {
+        $data = json_decode($this->response->getBody(true), true);
+        $value = json_decode((string)$value, true);
+        $diff = $this->getArrayDiff($value, $data);
+        if (!empty($diff)) {
+            throw new Exception('Response body value mismatch! Missing items:'."\n".print_r($diff, true));
+        }
+    }
+
+    /**
      * Check the value of an header property.
      *
      * Example:

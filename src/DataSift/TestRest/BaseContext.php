@@ -187,4 +187,29 @@ class BaseContext extends BehatContext
     {
         $this->printDebug($this->requestUrl."\n\n".$this->response);
     }
+
+    /**
+     * Returns the difference of two arrays
+     *
+     * @param array $arr1 The array to compare from.
+     * @param array $arr2 The array to compare against.
+     *
+     * @return array Returns an array containing all the entries from $arr1 that are not present in $arr2.
+     */
+    protected function getArrayDiff(array $arr1, array $arr2)
+    {
+        $diff = array();
+        foreach ($arr1 as $key => $val) {
+            if (isset($arr2[$key])) {
+                if (is_array($val)) {
+                    $diff = array_merge($diff, $this->getArrayDiff($val, $arr2[$key]));
+                } elseif ($arr2[$key] != $val) {
+                    $diff[$key] = $val;
+                }
+            } elseif (is_int($key) && !in_array($val, $arr2)) {
+                $diff[$key] = $val;
+            }
+        }
+        return $diff;
+    }
 }
