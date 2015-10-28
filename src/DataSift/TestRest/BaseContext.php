@@ -206,7 +206,7 @@ class BaseContext extends BehatContext
                     if (!empty($tmpdiff)) {
                         $diff[$key] = $tmpdiff;
                     }
-                } elseif ($arr2[$key] != $val) {
+                } elseif ($arr2[$key] !== $val) {
                     $diff[$key] = $val;
                 }
             } elseif (!is_int($key) || !in_array($val, $arr2)) {
