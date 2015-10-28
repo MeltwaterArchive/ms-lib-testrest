@@ -200,13 +200,16 @@ class BaseContext extends BehatContext
     {
         $diff = array();
         foreach ($arr1 as $key => $val) {
-            if (isset($arr2[$key])) {
+            if (array_key_exists($key, $arr2)) {
                 if (is_array($val)) {
-                    $diff = array_merge($diff, $this->getArrayDiff($val, $arr2[$key]));
+                    $tmpdiff = $this->getArrayDiff($val, $arr2[$key]);
+                    if (!empty($tmpdiff)) {
+                        $diff[$key] = $tmpdiff;
+                    }
                 } elseif ($arr2[$key] != $val) {
                     $diff[$key] = $val;
                 }
-            } elseif (is_int($key) && !in_array($val, $arr2)) {
+            } elseif (!is_int($key) || !in_array($val, $arr2)) {
                 $diff[$key] = $val;
             }
         }

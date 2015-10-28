@@ -54,7 +54,26 @@ Scenario: Simple test that show all options
     And the "data.float" property equals "1.2345"
     And the "data.boolean" property equals "true"
     And the "data.array" property is an "array" with "4" items
-    # Is it possible to check the entire response body:
+    And the response body contains the JSON data
+        """
+        {
+            "success":true,
+            "data":{
+                "property":[{"name":"12345"}],
+                "alpha":"beta",
+                "gamma":"delta",
+                "count":"3",
+                "collection":["a","b","c"],
+                "string":"one two",
+                "integer":"123",
+                "float":"1.2345",
+                "boolean":"1",
+                "array":["a","b","c","d"]
+            },
+            "raw":""
+        }
+        """
+    # Is it also possible to check the entire response body:
     #Then the the response body equals
     #    """
     #    name@example.com

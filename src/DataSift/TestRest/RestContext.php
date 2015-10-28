@@ -118,7 +118,7 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Check if the response body content correspond to the specified string.
      *
      * Examples:
-     *     the response body contains the JSON data
+     *     Then the response body contains the JSON data
      *     """
      *     {
      *          "field":"value",
