@@ -18,6 +18,7 @@
 namespace DataSift\TestRest;
 
 use \DataSift\TestRest\Exception;
+use \Behat\Gherkin\Node\PyStringNode;
 
 /**
  * DataSift\TestRest\RestContext
@@ -29,28 +30,96 @@ use \DataSift\TestRest\Exception;
  * @license     http://mediasift.com/licenses/internal MediaSift Internal License
  * @link        https://github.com/datasift/ms-lib-testrest
  */
-class RestContext extends \DataSift\TestRest\InputContext
+class RestContext extends \DataSift\TestRest\HeaderContext
 {
     /**
-     * Verify the value of the HTTP response status code.
+     * Check if the response has the specified property.
+     * Get the object value given the property name in dot notation.
      *
      * Example:
-     *     Then the response status code should be "200"
+     *     Then the response has a "field.name" property
      *
-     * @Then /^the response status code should be "(\d+)"$/
+     * @param string   $property  Property name in dot-separated format.
+     * @param StdClass $obj       Object to process.
+     *
+     * @return Object value
+     *
+     * @Then /^the response has a "([^"]*)" property$/
      */
-    public function theResponseStatusCodeShouldBe($httpStatus)
+    public function getObjectValue($property, $obj = null)
     {
-        if ((string)$this->response->getStatusCode() !== (string)$httpStatus) {
+        if ($obj === null) {
+            $obj = $this->getResponseData();
+        }
+        // explode property name
+        $keys = explode('.', $property);
+        foreach ($keys as $key) {
+            // extract the array index (if any)
+            $kdx = explode('[', $key);
+            unset($idx);
+            if (!empty($kdx[1])) {
+                $key = $kdx[0];
+                $idx = substr($kdx[1], 0, -1);
+            }
+            if (!isset($obj->$key)) {
+                $key = '"'.$key.'"';
+                if (!isset($obj->$key)) {
+                    throw new Exception('Property \''.$property.'\' is not set!');
+                }
+            }
+            $obj = $obj->$key;
+            if (isset($idx)) {
+                $obj = $obj[$idx];
+            }
+        }
+        return $obj;
+    }
+
+    /**
+     * Check if the response body content correspond to the specified string.
+     *
+     * Examples:
+     *     Then the the response body equals
+     *     """
+     *     name@example.com
+     *     """
+     *
+     * @param PyStringNode $value Expected response body content.
+     *
+     * @Then /^the response body equals$/
+     */
+    public function theResponseBodyEquals(PyStringNode $value)
+    {
+        $data = trim($this->response->getBody(true));
+        $value = trim((string)$value);
+        if ($value !== $data) {
+            throw new Exception('Response body value mismatch! (given: '.$value.', match: '.$data.')');
+        }
+    }
+
+    /**
+     * Check if the provided pattern matches the response body string.
+     *
+     * Example:
+     *     Then the response body match the pattern "/[a-z]+@example\.com/"
+     *
+     * @param string $pattern Regular expression pattern to search.
+     *
+     * @Then /^the response body match the pattern "([^\n]*)"$/
+     */
+    public function theResponseBodyMatchThePattern($pattern)
+    {
+        $value = trim($this->response->getBody(true));
+        $result = preg_match($pattern, $value);
+        if (empty($result)) {
             throw new Exception(
-                'HTTP code does not match '.$httpStatus.
-                ' (actual: '.$this->response->getStatusCode().')'
+                'The response body do not match the pattern \''.$pattern.'\'!'."\n"
             );
         }
     }
 
     /**
-     * Verify if the response is in JSON format.
+     * Verify if the response is in valid JSON format.
      *
      * Example:
      *     Then the response is JSON
@@ -67,42 +136,28 @@ class RestContext extends \DataSift\TestRest\InputContext
     }
 
     /**
-     * Check the value of an header property.
+     * Check if the response body content correspond to the specified string.
      *
-     * Example:
-     *     Then the "Connection" header property equals "close"
+     * Examples:
+     *     Then the response body contains the JSON data
+     *     """
+     *     {
+     *          "field":"value",
+     *          "count":1
+     *     }
+     *     """
      *
-     * @Then /^the "([^"]+)" header property equals "([^\n]*)"$/
+     * @param PyStringNode $value JSON string containing the data expected in the response body.
+     *
+     * @Then /^the response body contains the JSON data$/
      */
-    public function theHeaderPropertyEquals($propertyName, $propertyValue)
+    public function theResponseBodyContainsTheJsonData(PyStringNode $value)
     {
-        $value = $this->response->getHeader($propertyName);
-        if (($value === null) && ($propertyValue == 'null')) {
-            return;
-        }
-        // compare values
-        if ((string)$value !== (string)$propertyValue) {
-            throw new Exception('Property value mismatch! (given: '.$propertyValue.', match: '.$value.')');
-        }
-    }
-
-    /**
-     * Check if the value of the specified header property matches the defined regular expression pattern
-     *
-     * Example:
-     *     Then the value of the "Location" header property should match the pattern "^\/api\/[1-9][0-9]*$"
-     *
-     * @Then /^the value of the "([^"]*)" header property should match the pattern "([^\n]*)"$/
-     */
-    public function theValueOfTheHeaderPropertyShouldMatchThePattern($propertyName, $pattern)
-    {
-        $value = $this->response->getHeader($propertyName);
-        $result = preg_match($pattern, $value);
-        if (empty($result)) {
-            throw new Exception(
-                'The value of header \''.$propertyName.'\' is \''.$value
-                .'\' and does not match the pattern \''.$pattern.'\'!'."\n"
-            );
+        $data = json_decode($this->response->getBody(true), true);
+        $value = json_decode((string)$value, true);
+        $diff = $this->getArrayDiff($value, $data);
+        if (!empty($diff)) {
+            throw new Exception('Response body value mismatch! Missing items:'."\n".print_r($diff, true));
         }
     }
 
@@ -112,6 +167,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Examples:
      *     Then the type of the "field.name" property should be "string"
      *     Then the type of the "field.count" property should be "integer"
+     *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $type          Expected type of the property (boolean, integer, double, float, string, array)
      *
      * @Then /^the type of the "([^"]*)" property should be "([^"]+)"$/
      */
@@ -134,6 +192,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Examples:
      *     Then the "success" property equals "true"
      *     Then the "database[0].hostname" property equals "127.0.0.1"
+     *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $propertyValue Expected value of the property.
      *
      * @Then /^the "([^"]+)" property equals "([^\n]*)"$/
      */
@@ -175,6 +236,10 @@ class RestContext extends \DataSift\TestRest\InputContext
      *     Then the "data" property is an "array" with "5" items
      *     Then the "data" property is an "object" with "10" items
      *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $type          Type of property ("array" or "object").
+     * @param string $numitems      Expected number of elements in the array or object.
+     *
      * @Then /^the "([^"]*)" property is an "(array|object)" with "(null|\d+)" item[s]?$/
      */
     public function thePropertyIsAnWithItems($propertyName, $type, $numitems)
@@ -199,6 +264,9 @@ class RestContext extends \DataSift\TestRest\InputContext
      * Example:
      *     Then the length of the "datetime" property should be "19"
      *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $type          Expected string length of the property.
+     *
      * @Then /^the length of the "([^"]*)" property should be "(\d+)"$/
      */
     public function theLengthOfThePropertyShouldBe($propertyName, $length)
@@ -217,7 +285,10 @@ class RestContext extends \DataSift\TestRest\InputContext
      *
      * Example:
      *     Then the value of the "datetime" property should match the pattern
-     *     "^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$"
+     *     "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
+     *
+     * @param string $propertyName  Name of the property to check.
+     * @param string $pattern       Expected regular expression pattern of the property.
      *
      * @Then /^the value of the "([^"]*)" property should match the pattern "([^\n]*)"$/
      */
@@ -231,48 +302,5 @@ class RestContext extends \DataSift\TestRest\InputContext
                 .'\' and does not match the pattern \''.$pattern.'\'!'."\n"
             );
         }
-    }
-
-    /**
-     * Check if the response has the specified property.
-     * Get the object value given the property name in dot notation.
-     *
-     * Example:
-     *     Then the response has a "field.name" property
-     *
-     * @param string   $property  Dot-separated property name
-     * @param StdClass $obj       Object to process
-     *
-     * @return Object value
-     *
-     * @Then /^the response has a "([^"]*)" property$/
-     */
-    public function getObjectValue($property, $obj = null)
-    {
-        if ($obj === null) {
-            $obj = $this->getResponseData();
-        }
-        // explode property name
-        $keys = explode('.', $property);
-        foreach ($keys as $key) {
-            // extract the array index (if any)
-            $kdx = explode('[', $key);
-            unset($idx);
-            if (!empty($kdx[1])) {
-                $key = $kdx[0];
-                $idx = substr($kdx[1], 0, -1);
-            }
-            if (!isset($obj->$key)) {
-                $key = '"'.$key.'"';
-                if (!isset($obj->$key)) {
-                    throw new Exception('Property \''.$property.'\' is not set!');
-                }
-            }
-            $obj = $obj->$key;
-            if (isset($idx)) {
-                $obj = $obj[$idx];
-            }
-        }
-        return $obj;
     }
 }

@@ -71,11 +71,11 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         );
         $mockResponse->setHeaders(
             array(
-                "Host"         => "ms-lib-testrest",
-                "User-Agent"   => "test",
-                "Accept"       => "application/json",
-                "Content-Type" => "application/json",
-                "Location"     => "hello"
+                'Host'         => 'ms-lib-testrest',
+                'User-Agent'   => 'test',
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+                'Location'     => 'hello'
             )
         );
         $plugin = new \Guzzle\Plugin\Mock\MockPlugin();
@@ -100,42 +100,94 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->thatPropertyIs('one[3].two', '1.23');
     }
 
-    public function testThatInputJsonDataIs()
+    public function testThatTheBodyIsValidJson()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
-        $this->obj->thatInputJsonDataIs($json);
+        $this->obj->thatTheRequestBodyIsValidJson($json);
     }
 
-    public function testThatInputRawDataIs()
+    public function testTheResponseBodyEquals()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"echo":"foxtrot","\"quote\"":true}}',
+            1
+        );
+        $this->obj->theResponseBodyEquals($json);
+    }
+
+    public function testTheResponseBodyEqualsEx()
+    {
+        $this->setExpectedException('Exception');
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
+        $this->obj->theResponseBodyEquals($json);
+    }
+
+    public function testTheResponseBodyMatchThePattern()
+    {
+        $this->obj->theResponseBodyMatchThePattern('/fox[a-z]{4}/');
+    }
+
+    public function testTheResponseBodyMatchThePatternEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theResponseBodyMatchThePattern('/[~]{10}/');
+    }
+
+    public function testThatTheBodyIsValidJsonEx()
+    {
+        $this->setExpectedException('Exception');
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world', 1);
+        $this->obj->thatTheRequestBodyIsValidJson($json);
+    }
+
+    public function testThatThePropertiesInTheJson()
     {
         $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
-        $this->obj->thatInputRawDataIs($json);
+        $this->obj->thatThePropertiesInThe('JSON', $json);
     }
 
-    public function testThatInputJsonDataFileIs()
+    public function testThatThePropertiesInTheTable()
+    {
+        $table = new \Behat\Gherkin\Node\TableNode("|property|value|\n|alpha|beta|\n|gamma|delta|");
+        $this->obj->thatThePropertiesInThe('TABLE', $table);
+    }
+
+    public function testThatThePropertiesInTheEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->thatThePropertiesInThe('ERROR', '');
+    }
+
+    public function testthatTheRequestBodyIs()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode('{"hello":"world"}', 1);
+        $this->obj->thatTheRequestBodyIs($json);
+    }
+
+    public function testthatThePropertiesAreImportedFromTheJsonFile()
     {
         $file = 'test/resources/data.json';
-        $this->obj->thatInputJsonDataFileIs($file);
+        $this->obj->thatThePropertiesAreImportedFromTheJsonFile($file);
     }
 
-    public function testThatInputJsonDataFileIsException()
+    public function testthatThePropertiesAreImportedFromTheJsonFileException()
     {
         $this->setExpectedException('Exception');
         $file = 'test/resources/error.json';
-        $this->obj->thatInputJsonDataFileIs($file);
+        $this->obj->thatThePropertiesAreImportedFromTheJsonFile($file);
     }
 
-    public function testThatInputRawDataFileIs()
+    public function testthatTheRequestBodyIsImportedFromTheFile()
     {
         $file = 'test/resources/data.json';
-        $this->obj->thatInputRawDataFileIs($file);
+        $this->obj->thatTheRequestBodyIsImportedFromTheFile($file);
     }
 
-    public function testThatInputRawDataFileIsException()
+    public function testthatTheRequestBodyIsImportedFromTheFileException()
     {
         $this->setExpectedException('Exception');
         $file = 'test/resources/error.json';
-        $this->obj->thatInputRawDataFileIs($file);
+        $this->obj->thatTheRequestBodyIsImportedFromTheFile($file);
     }
 
     public function testIRequest()
@@ -209,6 +261,25 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $mockResponse->setBody('simple text', 'application/text');
         $this->setPropertyValue('response', $mockResponse);
         $this->obj->getResponseData();
+    }
+
+    public function testTheResponseBodyContainsTheJsonData()
+    {
+        $json = new \Behat\Gherkin\Node\PyStringNode(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"echo":"foxtrot","\"quote\"":true}}',
+            1
+        );
+        $this->obj->theResponseBodyContainsTheJsonData($json);
+    }
+
+    public function testTheResponseBodyContainsTheJsonDataEx()
+    {
+        $this->setExpectedException('Exception');
+        $json = new \Behat\Gherkin\Node\PyStringNode(
+            '{"hello":"world","0":[{"alpha":null},{"gamma":3}],"1":{"\"quote\"":false,"missing":true}}',
+            1
+        );
+        $this->obj->theResponseBodyContainsTheJsonData($json);
     }
 
     public function testGetObjectValue()
