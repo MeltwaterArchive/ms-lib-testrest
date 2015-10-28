@@ -149,6 +149,8 @@ class RestContext extends \DataSift\TestRest\HeaderContext
      *
      * @param PyStringNode $value JSON string containing the data expected in the response body.
      *
+     * @return array Array containing the actual returned data and the expected one.
+     *
      * @Then /^the response body contains the JSON data$/
      */
     public function theResponseBodyContainsTheJsonData(PyStringNode $value)
@@ -157,7 +159,33 @@ class RestContext extends \DataSift\TestRest\HeaderContext
         $value = json_decode((string)$value, true);
         $diff = $this->getArrayDiff($value, $data);
         if (!empty($diff)) {
-            throw new Exception('Response body value mismatch! Missing items:'."\n".print_r($diff, true));
+            throw new Exception('Response body value mismatch! Missing item(s):'."\n".print_r($diff, true));
+        }
+        return array($data, $value);
+    }
+
+    /**
+     * Check if the response body JSON structure and contents exactly matches the provided one.
+     *
+     * Examples:
+     *     Then the response body JSON equals
+     *     """
+     *     {
+     *          "field":"value",
+     *          "count":1
+     *     }
+     *     """
+     *
+     * @param PyStringNode $value JSON string containing the data expected in the response body.
+     *
+     * @Then /^the response body JSON equals$/
+     */
+    public function theResponseBodyJsonEquals(PyStringNode $value)
+    {
+        list($data, $value) = $this->theResponseBodyContainsTheJsonData($value);
+        $diff = $this->getArrayDiff($data, $value);
+        if (!empty($diff)) {
+            throw new Exception('Response body value mismatch! Extra item(s):'."\n".print_r($diff, true));
         }
     }
 

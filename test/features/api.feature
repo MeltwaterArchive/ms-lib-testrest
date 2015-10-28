@@ -28,7 +28,7 @@ Scenario: Simple test that show all options
         "collection":["a","b","c"]
     }
     """
-    # The following loads data from a JSON file and merge it with the existing one
+    ## The following loads data from a JSON file and merge it with the existing one
     Given that the properties are imported from the JSON file "test/resources/data.json"
     When I make a "GET" request to "/"
     Then echo last response
@@ -74,7 +74,15 @@ Scenario: Simple test that show all options
             "raw":""
         }
         """
-    # Is it also possible to check the entire response body:
+    ## Is it also possible to exact match the JSON response:
+    #And the response body JSON equals
+    #    """
+    #    {
+    #        "success":true,
+    #        ...
+    #    }
+    #    """
+    ## Is it also possible to check the entire response body:
     #Then the the response body equals
     #    """
     #    name@example.com
@@ -108,7 +116,7 @@ Scenario: Test Raw data
     And the response has a "raw" property
 
 Scenario: Test RAW input file data
-    # load RAW data from a file
+    ## load RAW data from a file
     Given that the request body is imported from the file "test/resources/data.json"
     When I make a "POST" request to "/"
     Then the response status code should be "200"
