@@ -113,7 +113,7 @@ class RestContext extends \DataSift\TestRest\HeaderContext
         $result = preg_match($pattern, $value);
         if (empty($result)) {
             throw new Exception(
-                'The response body do not match the pattern \''.$pattern.'\'!'."\n"
+                'The response body does not match the pattern \''.$pattern.'\'!'."\n"
             );
         }
     }
