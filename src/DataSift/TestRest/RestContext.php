@@ -30,26 +30,49 @@ use \Behat\Gherkin\Node\PyStringNode;
  * @license     http://mediasift.com/licenses/internal MediaSift Internal License
  * @link        https://github.com/datasift/ms-lib-testrest
  */
-class RestContext extends \DataSift\TestRest\InputContext
+class RestContext extends \DataSift\TestRest\HeaderContext
 {
     /**
-     * Verify the value of the HTTP response status code.
+     * Check if the response has the specified property.
+     * Get the object value given the property name in dot notation.
      *
      * Example:
-     *     Then the response status code should be "200"
+     *     Then the response has a "field.name" property
      *
-     * @param int $httpStatus Expected HTTP status code.
+     * @param string   $property  Property name in dot-separated format.
+     * @param StdClass $obj       Object to process.
      *
-     * @Then /^the response status code should be "(\d+)"$/
+     * @return Object value
+     *
+     * @Then /^the response has a "([^"]*)" property$/
      */
-    public function theResponseStatusCodeShouldBe($httpStatus)
+    public function getObjectValue($property, $obj = null)
     {
-        if ((string)$this->response->getStatusCode() !== (string)$httpStatus) {
-            throw new Exception(
-                'HTTP code does not match '.$httpStatus.
-                ' (actual: '.$this->response->getStatusCode().')'
-            );
+        if ($obj === null) {
+            $obj = $this->getResponseData();
         }
+        // explode property name
+        $keys = explode('.', $property);
+        foreach ($keys as $key) {
+            // extract the array index (if any)
+            $kdx = explode('[', $key);
+            unset($idx);
+            if (!empty($kdx[1])) {
+                $key = $kdx[0];
+                $idx = substr($kdx[1], 0, -1);
+            }
+            if (!isset($obj->$key)) {
+                $key = '"'.$key.'"';
+                if (!isset($obj->$key)) {
+                    throw new Exception('Property \''.$property.'\' is not set!');
+                }
+            }
+            $obj = $obj->$key;
+            if (isset($idx)) {
+                $obj = $obj[$idx];
+            }
+        }
+        return $obj;
     }
 
     /**
@@ -95,8 +118,6 @@ class RestContext extends \DataSift\TestRest\InputContext
         }
     }
 
-    // === NOTE: THE FOLLOWING METHODS ASSUME THAT THE RESPONSE IS A JSON ===
-    
     /**
      * Verify if the response is in valid JSON format.
      *
@@ -137,29 +158,6 @@ class RestContext extends \DataSift\TestRest\InputContext
         $diff = $this->getArrayDiff($value, $data);
         if (!empty($diff)) {
             throw new Exception('Response body value mismatch! Missing items:'."\n".print_r($diff, true));
-        }
-    }
-
-    /**
-     * Check the value of an header property.
-     *
-     * Example:
-     *     Then the "Connection" header property equals "close"
-     *
-     * @param string $propertyName  Name of the header property to check.
-     * @param string $propertyValue Expected value of the header property.
-     *
-     * @Then /^the "([^"]+)" header property equals "([^\n]*)"$/
-     */
-    public function theHeaderPropertyEquals($propertyName, $propertyValue)
-    {
-        $value = $this->response->getHeader($propertyName);
-        if (($value === null) && ($propertyValue == 'null')) {
-            return;
-        }
-        // compare values
-        if ((string)$value !== (string)$propertyValue) {
-            throw new Exception('Property value mismatch! (given: '.$propertyValue.', match: '.$value.')');
         }
     }
 
@@ -301,51 +299,8 @@ class RestContext extends \DataSift\TestRest\InputContext
         if (empty($result)) {
             throw new Exception(
                 'The value of property \''.$propertyName.'\' is \''.$value
-                .'\' and do not match the pattern \''.$pattern.'\'!'."\n"
+                .'\' and does not match the pattern \''.$pattern.'\'!'."\n"
             );
         }
-    }
-
-    /**
-     * Check if the response has the specified property.
-     * Get the object value given the property name in dot notation.
-     *
-     * Example:
-     *     Then the response has a "field.name" property
-     *
-     * @param string   $property  Property name in dot-separated format.
-     * @param StdClass $obj       Object to process.
-     *
-     * @return Object value
-     *
-     * @Then /^the response has a "([^"]*)" property$/
-     */
-    public function getObjectValue($property, $obj = null)
-    {
-        if ($obj === null) {
-            $obj = $this->getResponseData();
-        }
-        // explode property name
-        $keys = explode('.', $property);
-        foreach ($keys as $key) {
-            // extract the array index (if any)
-            $kdx = explode('[', $key);
-            unset($idx);
-            if (!empty($kdx[1])) {
-                $key = $kdx[0];
-                $idx = substr($kdx[1], 0, -1);
-            }
-            if (!isset($obj->$key)) {
-                $key = '"'.$key.'"';
-                if (!isset($obj->$key)) {
-                    throw new Exception('Property \''.$property.'\' is not set!');
-                }
-            }
-            $obj = $obj->$key;
-            if (isset($idx)) {
-                $obj = $obj[$idx];
-            }
-        }
-        return $obj;
     }
 }

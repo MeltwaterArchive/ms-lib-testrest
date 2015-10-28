@@ -20,7 +20,7 @@ namespace Test;
 class RestContextTest extends \PHPUnit_Framework_TestCase
 {
     protected $obj = null;
-    
+
     public function setUp()
     {
         //$this->markTestSkipped(); // skip this test
@@ -71,10 +71,11 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         );
         $mockResponse->setHeaders(
             array(
-                "Host"         => "ms-lib-testrest",
-                "User-Agent"   => "test",
-                "Accept"       => "application/json",
-                "Content-Type" => "application/json"
+                'Host'         => 'ms-lib-testrest',
+                'User-Agent'   => 'test',
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+                'Location'     => 'hello'
             )
         );
         $plugin = new \Guzzle\Plugin\Mock\MockPlugin();
@@ -224,6 +225,20 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Exception');
         $this->obj->theHeaderPropertyEquals('User-Agent', 'wrong');
+    }
+
+    public function testTheValueOfTheHeaderPropertyShouldMatchThePattern()
+    {
+        $this->obj->theValueOfTheHeaderPropertyShouldMatchThePattern('Location', '/^[a-z]{5}$/');
+
+        $this->setExpectedException('Exception');
+        $this->obj->theValueOfTheHeaderPropertyShouldMatchThePattern('Location', '/^[0-9]+$/');
+    }
+
+    public function testTheValueOfTheHeaderPropertyShouldMatchThePatternEx()
+    {
+        $this->setExpectedException('Exception');
+        $this->obj->theValueOfTheHeaderPropertyShouldMatchThePattern(-1, -0);
     }
 
     public function testGetResponseData()
@@ -390,6 +405,6 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->echoLastResponse();
         $out = ob_get_contents();
         ob_end_clean();
-        $this->assertEquals('d2468ac6f004816ffe65f95fd17872de', md5($out));
+        $this->assertEquals('cb804d80e3221a3cbd9e14a5b1e9b2f4', md5($out));
     }
 }

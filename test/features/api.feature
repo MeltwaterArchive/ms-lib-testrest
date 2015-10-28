@@ -35,6 +35,7 @@ Scenario: Simple test that show all options
     Then wait "1" second
     Then the response status code should be "200"
     And the "Connection" header property equals "close"
+    And the value of the "Connection" header property should match the pattern "/^[a-z]+$/"
     And the response is JSON
     And the response has a "success" property
     And the type of the "success" property should be "boolean"
