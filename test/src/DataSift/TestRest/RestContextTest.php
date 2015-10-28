@@ -122,15 +122,15 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->theResponseBodyEquals($json);
     }
 
-    public function testTheResponseBodyMatchThePattern()
+    public function testTheResponseBodyMatchesThePattern()
     {
-        $this->obj->theResponseBodyMatchThePattern('/fox[a-z]{4}/');
+        $this->obj->theResponseBodyMatchesThePattern('/fox[a-z]{4}/');
     }
 
-    public function testTheResponseBodyMatchThePatternEx()
+    public function testTheResponseBodyMatchesThePatternEx()
     {
         $this->setExpectedException('Exception');
-        $this->obj->theResponseBodyMatchThePattern('/[~]{10}/');
+        $this->obj->theResponseBodyMatchesThePattern('/[~]{10}/');
     }
 
     public function testThatTheBodyIsValidJsonEx()
@@ -227,18 +227,18 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->theHeaderPropertyEquals('User-Agent', 'wrong');
     }
 
-    public function testTheValueOfTheHeaderPropertyShouldMatchThePattern()
+    public function testTheValueOfTheHeaderPropertyMatchesThePattern()
     {
-        $this->obj->theValueOfTheHeaderPropertyShouldMatchThePattern('Location', '/^[a-z]{5}$/');
+        $this->obj->theValueOfTheHeaderPropertyMatchesThePattern('Location', '/^[a-z]{5}$/');
 
         $this->setExpectedException('Exception');
-        $this->obj->theValueOfTheHeaderPropertyShouldMatchThePattern('Location', '/^[0-9]+$/');
+        $this->obj->theValueOfTheHeaderPropertyMatchesThePattern('Location', '/^[0-9]+$/');
     }
 
-    public function testTheValueOfTheHeaderPropertyShouldMatchThePatternEx()
+    public function testTheValueOfTheHeaderPropertyMatchesThePatternEx()
     {
         $this->setExpectedException('Exception');
-        $this->obj->theValueOfTheHeaderPropertyShouldMatchThePattern(-1, -0);
+        $this->obj->theValueOfTheHeaderPropertyMatchesThePattern(-1, -0);
     }
 
     public function testGetResponseData()
@@ -366,18 +366,18 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
         $this->obj->theLengthOfThePropertyShouldBe('hello', 6);
     }
 
-    public function testTheValueOfThePropertyShouldMatchThePattern()
+    public function testTheValueOfThePropertyMatchesThePattern()
     {
-        $this->obj->theValueOfThePropertyShouldMatchThePattern('hello', '/^[a-z]{5}$/');
+        $this->obj->theValueOfThePropertyMatchesThePattern('hello', '/^[a-z]{5}$/');
 
         $this->setExpectedException('Exception');
-        $this->obj->theValueOfThePropertyShouldMatchThePattern('hello', '/^[0-9]+$/');
+        $this->obj->theValueOfThePropertyMatchesThePattern('hello', '/^[0-9]+$/');
     }
 
-    public function testTheValueOfThePropertyShouldMatchThePatternEx()
+    public function testTheValueOfThePropertyMatchesThePatternEx()
     {
         $this->setExpectedException('Exception');
-        $this->obj->theValueOfThePropertyShouldMatchThePattern(-1, -0);
+        $this->obj->theValueOfThePropertyMatchesThePattern(-1, -0);
     }
 
     public function testTheResponseStatusCodeShouldBe()

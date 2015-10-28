@@ -35,13 +35,13 @@ Scenario: Simple test that show all options
     Then wait "1" second
     Then the response status code should be "200"
     And the "Connection" header property equals "close"
-    And the value of the "Connection" header property should match the pattern "/^[a-z]+$/"
+    And the value of the "Connection" header property matches the pattern "/^[a-z]+$/"
     And the response is JSON
     And the response has a "success" property
     And the type of the "success" property should be "boolean"
     And the "success" property equals "true"
-    And the value of the "datetime" property should match the pattern "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
-    And the response body match the pattern "/[\"]ga[m]{2}a[\"]/"
+    And the value of the "datetime" property matches the pattern "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
+    And the response body matches the pattern "/[\"]ga[m]{2}a[\"]/"
     And the "data" property is an "object" with "10" items
     And the "data.property" property is an "array" with "1" item
     And the "data.property[0].name" property equals "12345"

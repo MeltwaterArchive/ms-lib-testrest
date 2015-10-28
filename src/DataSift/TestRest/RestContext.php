@@ -101,19 +101,19 @@ class RestContext extends \DataSift\TestRest\HeaderContext
      * Check if the provided pattern matches the response body string.
      *
      * Example:
-     *     Then the response body match the pattern "/[a-z]+@example\.com/"
+     *     Then the response body matches the pattern "/[a-z]+@example\.com/"
      *
      * @param string $pattern Regular expression pattern to search.
      *
-     * @Then /^the response body match the pattern "([^\n]*)"$/
+     * @Then /^the response body matches the pattern "([^\n]*)"$/
      */
-    public function theResponseBodyMatchThePattern($pattern)
+    public function theResponseBodyMatchesThePattern($pattern)
     {
         $value = trim($this->response->getBody(true));
         $result = preg_match($pattern, $value);
         if (empty($result)) {
             throw new Exception(
-                'The response body does not match the pattern \''.$pattern.'\'!'."\n"
+                'The response body does not matches the pattern \''.$pattern.'\'!'."\n"
             );
         }
     }
@@ -136,7 +136,7 @@ class RestContext extends \DataSift\TestRest\HeaderContext
     }
 
     /**
-     * Check if the response body content correspond to the specified string.
+     * Check if the response body content contains the specified JSON data.
      *
      * Examples:
      *     Then the response body contains the JSON data
@@ -284,22 +284,22 @@ class RestContext extends \DataSift\TestRest\HeaderContext
      * Check if the value of the specified property matches the defined regular expression pattern
      *
      * Example:
-     *     Then the value of the "datetime" property should match the pattern
+     *     Then the value of the "datetime" property matches the pattern
      *     "/^[0-9]{4}[\-][0-9]{2}[\-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$/"
      *
      * @param string $propertyName  Name of the property to check.
      * @param string $pattern       Expected regular expression pattern of the property.
      *
-     * @Then /^the value of the "([^"]*)" property should match the pattern "([^\n]*)"$/
+     * @Then /^the value of the "([^"]*)" property matches the pattern "([^\n]*)"$/
      */
-    public function theValueOfThePropertyShouldMatchThePattern($propertyName, $pattern)
+    public function theValueOfThePropertyMatchesThePattern($propertyName, $pattern)
     {
         $value = (string)$this->getObjectValue($propertyName);
         $result = preg_match($pattern, $value);
         if (empty($result)) {
             throw new Exception(
                 'The value of property \''.$propertyName.'\' is \''.$value
-                .'\' and does not match the pattern \''.$pattern.'\'!'."\n"
+                .'\' and does not matches the pattern \''.$pattern.'\'!'."\n"
             );
         }
     }

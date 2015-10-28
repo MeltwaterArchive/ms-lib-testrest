@@ -79,21 +79,21 @@ class HeaderContext extends \DataSift\TestRest\InputContext
      * Check if the value of the specified header property matches the defined regular expression pattern
      *
      * Example:
-     *     Then the value of the "Location" header property should match the pattern "^\/api\/[1-9][0-9]*$"
+     *     Then the value of the "Location" header property matches the pattern "^\/api\/[1-9][0-9]*$"
      *
      * @param string $propertyName Name of the header property to check.
      * @param string $pattern      Regular expression pattern to match
      *
-     * @Then /^the value of the "([^"]*)" header property should match the pattern "([^\n]*)"$/
+     * @Then /^the value of the "([^"]*)" header property matches the pattern "([^\n]*)"$/
      */
-    public function theValueOfTheHeaderPropertyShouldMatchThePattern($propertyName, $pattern)
+    public function theValueOfTheHeaderPropertyMatchesThePattern($propertyName, $pattern)
     {
         $value = $this->response->getHeader($propertyName);
         $result = preg_match($pattern, $value);
         if (empty($result)) {
             throw new Exception(
                 'The value of header \''.$propertyName.'\' is \''.$value
-                .'\' and does not match the pattern \''.$pattern.'\'!'."\n"
+                .'\' and does not matches the pattern \''.$pattern.'\'!'."\n"
             );
         }
     }
