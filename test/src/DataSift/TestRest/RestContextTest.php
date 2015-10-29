@@ -238,7 +238,7 @@ class RestContextTest extends \PHPUnit_Framework_TestCase
     public function testTheValueOfTheHeaderPropertyMatchesThePatternEx()
     {
         $this->setExpectedException('Exception');
-        $this->obj->theValueOfTheHeaderPropertyMatchesThePattern(-1, -0);
+        $this->obj->theValueOfTheHeaderPropertyMatchesThePattern('missing', '/aaaa/');
     }
 
     public function testGetResponseData()
