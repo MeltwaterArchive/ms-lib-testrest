@@ -11,11 +11,10 @@ Scenario: Test JSON data
     }
     """
     When I make a "POST" request to "/"
-    Then echo last response
     Then the response status code should be "200"
     And the "success" property equals "true"
 
-Scenario: Simple test that show all options
+Scenario: Simple test that show most options
     Given that header property "Test" is "12345"
     And that "property[0].name" is "12345"
     # NOTE: The following loads data from a JSON file and converts it into property-value items
@@ -74,19 +73,6 @@ Scenario: Simple test that show all options
             "raw":""
         }
         """
-    ## Is it also possible to exact match the JSON response:
-    #And the response body JSON equals
-    #    """
-    #    {
-    #        "success":true,
-    #        ...
-    #    }
-    #    """
-    ## Is it also possible to check the entire response body:
-    #Then the the response body equals
-    #    """
-    #    name@example.com
-    #    """
 
 Scenario Outline: Test data table mode
     Given that "property.name" is "<name>"
@@ -128,7 +114,6 @@ Scenario: Test input properties in tabular form
         | name        | Nicola           |
         | email       | name@example.com |
     When I make a "GET" request to "/"
-    Then echo last response
     Then the response status code should be "200"
     And the "success" property equals "true"
     And the "data.name" property equals "Nicola"

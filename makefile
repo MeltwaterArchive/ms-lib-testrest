@@ -1,7 +1,11 @@
 # MAKEFILE
 #
+# @category    Library
+# @package     DataSift\TestRest
 # @author      Nicola Asuni <nicola.asuni@datasift.com>
-# @link        https://github.com/datasift/ms-service-testrest
+# @copyright   2015-2015 MediaSift Ltd. <http://datasift.com>
+# @license     The MIT License (MIT) - see the LICENSE file
+# @link        https://github.com/datasift/ms-lib-testrest
 # ------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files

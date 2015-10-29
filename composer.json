@@ -1,11 +1,15 @@
 {
     "name": "datasift/ms-lib-testrest",
     "description": "Library to test end-to-end RESTful services using Behat",
-    "license": "MediaSift Internal",
+    "type": "library",
+    "homepage": "https://github.com/datasift/ms-lib-testrest",
+    "license": "MIT",
+    "keywords": ["ms-lib-testrest", "behat", "testing", "restful", "API", "datasift"],
     "authors": [
         {
             "name": "Nicola Asuni",
-            "email": "nicola.asuni@datasift.com"
+            "email": "nicola.asuni@datasift.com",
+            "role": "lead"
         }
     ],
     "require": {

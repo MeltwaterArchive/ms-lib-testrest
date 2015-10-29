@@ -8,7 +8,6 @@
 			<directory>test/src</directory>
 		</testsuite>
 	</testsuites>
-
 	<filter>
 		<whitelist>
 			<directory suffix="php">src</directory>
@@ -20,6 +19,6 @@
 	<logging>
 	<log type="coverage-html" target="target/coverage" charset="UTF-8"/>
 		<log type="coverage-clover" target="target/coverage/coverage.xml" charset="UTF-8"/>
-	<log type="junit" target="target/logs/junit.xml" logIncompleteSkipped="false"/>
+		<log type="junit" target="target/logs/junit.xml" logIncompleteSkipped="false"/>
 	</logging>
 </phpunit>
