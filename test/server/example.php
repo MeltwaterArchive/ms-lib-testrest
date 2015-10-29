@@ -1,6 +1,6 @@
 <?php
 /**
- * Test Server
+ * Test Server (another example)
  *
  * @category    Library
  * @package     DataSift\TestRest
@@ -13,8 +13,6 @@
 $data = json_encode(
     array(
         'success'   => true,
-        'timestamp' => time(),
-        'datetime'  => gmdate('Y-m-d H:i:s'),
         'data'      => $_REQUEST,
         'raw'       => file_get_contents('php://input') // read raw data from the request body
     )

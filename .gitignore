@@ -1,7 +1,12 @@
+vendor
+target
 phpunit.xml
-**/vendor
-**/target
-**/local
 **/auth.json
+**/.vagrant
 **/nbproject
 **/.idea
+**/.DS_Store
+**/.#*
+**/._*
+**/*.tmp
+**/*.bak

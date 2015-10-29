@@ -1,15 +1,11 @@
 # BeHat configuration file
 #
-# This software is the intellectual property of MediaSift Ltd., and is covered
-# by retained intellectual property rights, including copyright.
-# Distribution of this software is strictly forbidden under the terms of this license.
-#
 # @category   Services
 # @package    DataSift\TestRest
 # @author     Nicola Asuni <nicola.asuni@datasift.com>
-# @copyright  2015-2015 MediaSift Ltd.
-# @license    http://mediasift.com/licenses/internal MediaSift Internal License
-# @link       https://github.com/datasift/ms-service-mask
+# @copyright  2015-2015 MediaSift Ltd. <http://datasift.com> <http://datasift.com>
+# @license    https://opensource.org/licenses/MIT The MIT License (MIT) - see the LICENSE file
+# @link       https://github.com/datasift/ms-lib-testrest
 
 default:
     filters:
@@ -23,7 +19,7 @@ default:
         parameters:
             # URL of the local testing server, it must match the one defined in the makefile
             base_url: http://localhost:8081
-            # The following section can be omitted if the project doesn't use any database
+            # [OPTIONAL] The following section can be omitted if the project doesn't use any database
             db:
                 # PDO driver name
                 driver: mysql

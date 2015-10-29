@@ -1,26 +1,30 @@
 {
     "name": "datasift/ms-lib-testrest",
     "description": "Library to test end-to-end RESTful services using Behat",
-    "license": "MediaSift Internal",
+    "type": "library",
+    "homepage": "https://github.com/datasift/ms-lib-testrest",
+    "license": "MIT",
+    "keywords": ["ms-lib-testrest", "behat", "testing", "restful", "API", "datasift"],
     "authors": [
         {
             "name": "Nicola Asuni",
-            "email": "nicola.asuni@datasift.com"
+            "email": "nicola.asuni@datasift.com",
+            "role": "lead"
         }
     ],
     "require": {
-        "behat/behat" : "2.*",
-        "guzzle/guzzle" : "3.*"
+        "behat/behat" : "2.5.*",
+        "guzzle/guzzle" : "3.9.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.*",
-        "squizlabs/php_codesniffer": "2.0.*",
-        "phpmd/phpmd" : "2.2.*",
+        "phpunit/phpunit": "4.8.*",
+        "squizlabs/php_codesniffer": "2.3.*",
+        "phpmd/phpmd" : "2.3.*",
         "sebastian/phpcpd" : "2.0.*",
-        "phploc/phploc" : "2.0.*",
+        "phploc/phploc" : "2.1.*",
         "apigen/apigen" : "4.1.*",
-        "pdepend/pdepend" : "2.0.*",
-        "bartlett/php-compatinfo" : "4.3.*"
+        "pdepend/pdepend" : "2.2.*",
+        "bartlett/php-compatinfo" : "4.5.*"
     },
     "autoload": {
         "psr-0":{
