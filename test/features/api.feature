@@ -1,5 +1,11 @@
 Feature: Testing if the API is responding
 
+Scenario: Test authentication details
+    Given my username is "usernameone" and my API key is "apikeyone"
+    When I make a "POST" request to "/auth.php"
+    Then the response status code should be "200"
+    And the "Authorization" property equals "usernameone:apikeyone"
+
 Scenario: Test JSON data
     Given that the request body is valid JSON
     """

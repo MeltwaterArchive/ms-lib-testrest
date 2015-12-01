@@ -16,6 +16,8 @@ use \DataSift\TestRest\Exception;
 use \Behat\Gherkin\Node\PyStringNode;
 use \Behat\Gherkin\Node\TableNode;
 
+use Behat\Behat\Context\Step\Given;
+
 /**
  * DataSift\TestRest\InputContext
  *
@@ -316,5 +318,13 @@ class InputContext extends \DataSift\TestRest\BaseContext
             }
         }
         return $sep;
+    }
+
+    /**
+     * @Given /^my username is "([^"]*)" and my API key is "([^"]*)"$/
+     */
+    public function myUsernameIsAndMyApiKeyIs($username, $apiKey)
+    {
+        return new Given('that header property "Authorization" is "'.$username.':'.$apiKey.'"');
     }
 }
