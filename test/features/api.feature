@@ -1,8 +1,14 @@
 Feature: Testing if the API is responding
 
-Scenario: Test authentication details
+Scenario: Test authentication details (POST)
     Given my username is "usernameone" and my API key is "apikeyone"
     When I make a "POST" request to "/auth.php"
+    Then the response status code should be "200"
+    And the "Authorization" property equals "usernameone:apikeyone"
+
+Scenario: Test authentication details (GET)
+    Given my username is "usernameone" and my API key is "apikeyone"
+    When I make a "GET" request to "/auth.php"
     Then the response status code should be "200"
     And the "Authorization" property equals "usernameone:apikeyone"
 
