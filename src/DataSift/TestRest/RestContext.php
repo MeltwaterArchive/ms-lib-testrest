@@ -326,4 +326,36 @@ class RestContext extends \DataSift\TestRest\HeaderContext
             );
         }
     }
+
+    /**
+     * Check if the response body is empty.
+     *
+     * Example:
+     *     Then the response is empty
+     *
+     * @Then /^the response is empty$/
+     */
+    public function theResponseIsEmpty()
+    {
+        $data = trim($this->response->getBody(true));
+        if ($data) {
+            throw new Exception('Response body is not empty! (match: '.$data.')');
+        }
+    }
+
+    /**
+     * Check if the response body is not empty.
+     *
+     * Example:
+     *     Then the response is not empty
+     *
+     * @Then /^the response is not empty$/
+     */
+    public function theResponseIsNotEmpty()
+    {
+        $data = trim($this->response->getBody(true));
+        if (! $data) {
+            throw new Exception('Response body is empty!');
+        }
+    }
 }
