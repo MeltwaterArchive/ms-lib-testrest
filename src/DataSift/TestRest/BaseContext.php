@@ -106,10 +106,10 @@ class BaseContext extends BehatContext
     }
 
     /**
-     * Setup the database before every feature (if configured).
+     * Setup the database before every scenario (if configured).
      * The database settings are defined in behat.yml
      *
-     * @BeforeFeature
+     * @BeforeScenario
      */
     public static function setupEnvironment()
     {
@@ -152,17 +152,6 @@ class BaseContext extends BehatContext
         @$dbtest->query('SET FOREIGN_KEY_CHECKS=1');
 
         $dbtest = null; // close the database connection
-    }
-
-    /**
-     * Setup the database after every scenario (if configured).
-     * The database settings are defined in behat.yml
-     *
-     * @AfterScenario
-     */
-    public static function resetDatabase()
-    {
-        self::setupEnvironment();
     }
 
     /**
