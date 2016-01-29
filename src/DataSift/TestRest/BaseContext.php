@@ -155,6 +155,17 @@ class BaseContext extends BehatContext
     }
 
     /**
+     * Setup the database after every scenario (if configured).
+     * The database settings are defined in behat.yml
+     *
+     * @AfterScenario
+     */
+    public static function resetDatabase()
+    {
+        self::setupEnvironment();
+    }
+
+    /**
      * Delays the program execution for the given number of seconds.
      *
      * Examples:
