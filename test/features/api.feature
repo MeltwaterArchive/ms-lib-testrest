@@ -1,18 +1,20 @@
 Feature: Testing if the API is responding
 
-Scenario: Test authentication details (POST)
+  Scenario: Test authentication details (POST)
     Given my username is "usernameone" and my API key is "apikeyone"
     When I make a "POST" request to "/auth.php"
     Then the response status code should be "200"
     And the "Authorization" property equals "usernameone:apikeyone"
+    And the response is not empty
 
-Scenario: Test authentication details (GET)
+  Scenario: Test authentication details (GET)
     Given my username is "usernameone" and my API key is "apikeyone"
     When I make a "GET" request to "/auth.php"
     Then the response status code should be "200"
     And the "Authorization" property equals "usernameone:apikeyone"
+    And the response is not empty
 
-Scenario: Test JSON data
+  Scenario: Test JSON data
     Given that the request body is valid JSON
     """
     {
@@ -24,12 +26,13 @@ Scenario: Test JSON data
     """
     When I make a "POST" request to "/"
     Then the response status code should be "200"
+    And the response is not empty
     And the "success" property equals "true"
 
-Scenario: Simple test that show most options
+  Scenario: Simple test that show most options
     Given that header property "Test" is "12345"
     And that "property[0].name" is "12345"
-    # NOTE: The following loads data from a JSON file and converts it into property-value items
+      # NOTE: The following loads data from a JSON file and converts it into property-value items
     Given that the properties in the "JSON"
     """
     {
@@ -39,12 +42,13 @@ Scenario: Simple test that show most options
         "collection":["a","b","c"]
     }
     """
-    ## The following loads data from a JSON file and merge it with the existing one
+      ## The following loads data from a JSON file and merge it with the existing one
     Given that the properties are imported from the JSON file "test/resources/data.json"
     When I make a "GET" request to "/"
     Then echo last response
     Then wait "1" second
     Then the response status code should be "200"
+    And the response is not empty
     And the "Connection" header property equals "close"
     And the value of the "Connection" header property matches the pattern "/^[a-z]+$/"
     And the response is JSON
@@ -86,7 +90,7 @@ Scenario: Simple test that show most options
         }
         """
 
-Scenario Outline: Test data table mode
+  Scenario Outline: Test data table mode
     Given that "property.name" is "<name>"
     When I make a "GET" request to "/"
     Then the response status code should be "<code>"
@@ -94,11 +98,11 @@ Scenario Outline: Test data table mode
     And the "success" property equals "<success>"
     And the "data.property.name" property equals "<name>"
     Examples:
-        | name  | code | success |
-        | alpha |  200 | true    |
-        | bravo |  200 | true    |
+      | name  | code | success |
+      | alpha | 200  | true    |
+      | bravo | 200  | true    |
 
-Scenario: Test Raw data
+  Scenario: Test Raw data
     Given that the request body is
     """
     {
@@ -110,25 +114,32 @@ Scenario: Test Raw data
     """
     When I make a "POST" request to "/"
     Then the response status code should be "200"
+    And the response is not empty
     And the "success" property equals "true"
     And the response has a "raw" property
 
-Scenario: Test RAW input file data
-    ## load RAW data from a file
+  Scenario: Test RAW input file data
+      ## load RAW data from a file
     Given that the request body is imported from the file "test/resources/data.json"
     When I make a "POST" request to "/"
     Then the response status code should be "200"
+    And the response is not empty
     And the "success" property equals "true"
     And the response has a "raw" property
 
-Scenario: Test input properties in tabular form
+  Scenario: Test input properties in tabular form
     Given that the properties in the "TABLE"
-        | name        | Nicola           |
-        | email       | name@example.com |
+      | name  | Nicola           |
+      | email | name@example.com |
     When I make a "GET" request to "/"
     Then the response status code should be "200"
+    And the response is not empty
     And the "success" property equals "true"
     And the "data.name" property equals "Nicola"
     And the "data.email" property equals "name@example.com"
     And the response has a "raw" property
 
+  Scenario: Test empty response from server
+    When I make a "GET" request to "/empty.php"
+    Then the response status code should be "204"
+    And the response is empty
