@@ -32,3 +32,6 @@ default:
                 sql_schema: '/../../../test/resources/database/schema.sql'
                 # file containing the database test data
                 sql_data: '/../../../test/resources/database/data.sql'
+            memcached:
+                host: 127.0.0.1
+                port: 11211
