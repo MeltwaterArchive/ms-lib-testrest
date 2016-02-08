@@ -111,7 +111,7 @@ class BaseContext extends BehatContext
      *
      * @BeforeScenario
      */
-    public static function setupEnvironment()
+    public static function setupDatabase()
     {
         // clean the APC cache (if any)
         if (function_exists('apc_clear_cache')) {
@@ -152,6 +152,28 @@ class BaseContext extends BehatContext
         @$dbtest->query('SET FOREIGN_KEY_CHECKS=1');
 
         $dbtest = null; // close the database connection
+    }
+
+    /**
+     * Flush the memcached before every scenario (if configured).
+     * The memcache settings are defined in behat.yml
+     *
+     * @BeforeScenario
+     */
+    public static function flushCache()
+    {
+        if (empty(self::$parameters['memcached'])) {
+            // no memcached defined
+            return;
+        }
+
+        $memcache = new \Memcached();
+        $memcache->addServer(
+            self::$parameters['memcached']['host'],
+            isset(self::$parameters['memcached']['port']) ? self::$parameters['memcached']['port'] : 11211
+        );
+
+        $memcache->flush();
     }
 
     /**

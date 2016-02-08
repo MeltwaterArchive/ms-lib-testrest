@@ -34,6 +34,10 @@ class BaseContextTest extends \PHPUnit_Framework_TestCase
                 'password'   => 'testrest',
                 'sql_schema' => '/../../../test/resources/database/schema.sql',
                 'sql_data'   => '/../../../test/resources/database/data.sql'
+            ),
+            'memcached' => array(
+                'host' => '127.0.0.1',
+                'port' => 11211
             )
         );
         $this->obj = new \DataSift\TestRest\BaseContext($parameters);
@@ -57,12 +61,21 @@ class BaseContextTest extends \PHPUnit_Framework_TestCase
         $obj->getParameter('missing');
     }
 
-    public function testSetupEnvironment()
+    public function testSetupDatabase()
     {
         $obj = $this->obj;
-        $obj::setupEnvironment();
+        $obj::setupDatabase();
 
         $obj = new \DataSift\TestRest\BaseContext(array());
-        $obj::setupEnvironment();
+        $obj::setupDatabase();
+    }
+
+    public function testFlushCache()
+    {
+        $obj = $this->obj;
+        $obj::flushCache();
+
+        $obj = new \DataSift\TestRest\BaseContext(array());
+        $obj::flushCache();
     }
 }
