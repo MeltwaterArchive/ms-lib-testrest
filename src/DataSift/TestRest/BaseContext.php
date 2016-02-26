@@ -117,41 +117,55 @@ class BaseContext extends BehatContext
         if (function_exists('apc_clear_cache')) {
             apc_clear_cache('user');
         }
-        
+
         if (empty(self::$parameters['db'])) {
             // no database defined
             return;
         }
 
         // load the SQL queries to process
-        $sql = "\n".file_get_contents(__DIR__ . self::$parameters['db']['sql_schema'])
-            ."\n".file_get_contents(__DIR__ . self::$parameters['db']['sql_data'])."\n";
+        $sql = "\n" . file_get_contents(__DIR__ . self::$parameters['db']['sql_schema'])
+            . "\n" . file_get_contents(__DIR__ . self::$parameters['db']['sql_data']) . "\n";
 
         // split sql string into single line SQL statements
-        $sql = str_replace("\r", '', $sql);                         // remove CR
-        $sql = preg_replace("/\/\*([^\*]*)\*\//si", ' ', $sql);     // remove comments (/* ... */)
-        $sql = preg_replace("/\n([\s]*)\#([^\n]*)/si", '', $sql);   // remove comments (lines starting with '#')
+        $sql = str_replace("\r", '', $sql); // remove CR
+        $sql = preg_replace("/\/\*([^\*]*)\*\//si", ' ', $sql); // remove comments (/* ... */)
+        $sql = preg_replace("/\n([\s]*)\#([^\n]*)/si", '', $sql); // remove comments (lines starting with '#')
         $sql = preg_replace("/\n([\s]*)\-\-([^\n]*)/si", '', $sql); // remove comments (lines starting with '--')
-        $sql = preg_replace("/;([\s]*)\n/si", ";\r", $sql);         // mark valid new lines
-        $sql = str_replace("\n", ' ', $sql);                        // replace new lines with a space character
-        $sql = preg_replace("/(;\r)$/si", '', $sql);                // remove last ";\r"
+        $sql = preg_replace("/;([\s]*)\n/si", ";\r", $sql); // mark valid new lines
+        $sql = str_replace("\n", ' ', $sql); // replace new lines with a space character
+        $sql = preg_replace("/(;\r)$/si", '', $sql); // remove last ";\r"
         $sql_queries = explode(";\r", trim($sql));
 
-        // connect to the database
-        $dsn = self::$parameters['db']['driver']
-            .':dbname='.self::$parameters['db']['database']
-            .';host='.self::$parameters['db']['host']
-            .';port='.self::$parameters['db']['port'];
-        $dbtest = new \PDO($dsn, self::$parameters['db']['username'], self::$parameters['db']['password']);
+        if (self::$parameters['db']['driver'] == 'mysql') {
+            // connect to the database
+            $dsn = self::$parameters['db']['driver']
+                . ':dbname=' . self::$parameters['db']['database']
+                . ';host=' . self::$parameters['db']['host']
+                . ';port=' . self::$parameters['db']['port'];
+            $dbtest = new \PDO($dsn, self::$parameters['db']['username'], self::$parameters['db']['password']);
 
-        // execute all queries
-        @$dbtest->query('SET FOREIGN_KEY_CHECKS=0');
-        foreach ($sql_queries as $query) {
-            $dbtest->query($query);
+            // execute all queries
+            @$dbtest->query('SET FOREIGN_KEY_CHECKS=0');
+            foreach ($sql_queries as $query) {
+                $dbtest->query($query);
+            }
+            @$dbtest->query('SET FOREIGN_KEY_CHECKS=1');
+
+            $dbtest = null; // close the database connection
+        } else {
+            //create a DB in sqlite
+            $dsn = self::$parameters['db']['driver']
+                . ':' . self::$parameters['db']['path'];
+
+            $dbtest = new \PDO($dsn);
+
+            //execute all queries
+            foreach ($sql_queries as $query) {
+                $dbtest->query($query);
+            }
+            $dbtest = null; // close the database connection
         }
-        @$dbtest->query('SET FOREIGN_KEY_CHECKS=1');
-
-        $dbtest = null; // close the database connection
     }
 
     /**
@@ -202,7 +216,7 @@ class BaseContext extends BehatContext
      */
     public function echoLastResponse()
     {
-        $this->printDebug($this->requestUrl."\n\n".$this->response);
+        $this->printDebug($this->requestUrl . "\n\n" . $this->response);
     }
 
     /**
