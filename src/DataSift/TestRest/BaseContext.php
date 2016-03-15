@@ -137,9 +137,6 @@ class BaseContext extends BehatContext
         $sql = preg_replace("/(;\r)$/si", '', $sql); // remove last ";\r"
         $sql_queries = explode(";\r", trim($sql));
 
-        array_unshift($sql_queries, 'BEGIN');
-        $sql_queries[] = 'COMMIT';
-
         if (self::$parameters['db']['driver'] == 'mysql') {
             // connect to the database
             $dsn = self::$parameters['db']['driver']
