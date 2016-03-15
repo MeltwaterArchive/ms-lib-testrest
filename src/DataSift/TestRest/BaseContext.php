@@ -160,6 +160,10 @@ class BaseContext extends BehatContext
 
             $dbtest = new \PDO($dsn);
 
+            //wrapping the SQL statements to improve performance.
+            array_unshift($sql_queries, 'BEGIN');
+            $sql_queries[] = 'COMMIT';
+
             //execute all queries
             foreach ($sql_queries as $query) {
                 $dbtest->query($query);
