@@ -145,10 +145,17 @@ class BaseContext extends BehatContext
                 . ';port=' . self::$parameters['db']['port'];
             $dbtest = new \PDO($dsn, self::$parameters['db']['username'], self::$parameters['db']['password']);
 
+            $dbtest->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
             // execute all queries
             @$dbtest->query('SET FOREIGN_KEY_CHECKS=0');
             foreach ($sql_queries as $query) {
-                $dbtest->query($query);
+                try {
+                    $dbtest->query($query);
+                } catch (\Exception $ex) {
+                    print "$query\n";
+                    throw $ex;
+                }
             }
             @$dbtest->query('SET FOREIGN_KEY_CHECKS=1');
 
@@ -160,13 +167,20 @@ class BaseContext extends BehatContext
 
             $dbtest = new \PDO($dsn);
 
+            $dbtest->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
             //wrapping the SQL statements to improve performance.
             array_unshift($sql_queries, 'BEGIN');
             $sql_queries[] = 'COMMIT';
 
             //execute all queries
             foreach ($sql_queries as $query) {
-                $dbtest->query($query);
+                try {
+                    $dbtest->query($query);
+                } catch (\Exception $ex) {
+                    print "$query\n";
+                    throw $ex;
+                }
             }
             $dbtest = null; // close the database connection
         }
