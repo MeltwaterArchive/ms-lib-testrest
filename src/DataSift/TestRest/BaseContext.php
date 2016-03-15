@@ -137,6 +137,9 @@ class BaseContext extends BehatContext
         $sql = preg_replace("/(;\r)$/si", '', $sql); // remove last ";\r"
         $sql_queries = explode(";\r", trim($sql));
 
+        array_unshift($sql_queries, 'BEGIN');
+        $sql_queries[] = 'COMMIT';
+
         if (self::$parameters['db']['driver'] == 'mysql') {
             // connect to the database
             $dsn = self::$parameters['db']['driver']
@@ -159,6 +162,10 @@ class BaseContext extends BehatContext
                 . ':' . self::$parameters['db']['path'];
 
             $dbtest = new \PDO($dsn);
+
+            //wrapping the SQL statements to improve performance.
+            array_unshift($sql_queries, 'BEGIN');
+            $sql_queries[] = 'COMMIT';
 
             //execute all queries
             foreach ($sql_queries as $query) {
