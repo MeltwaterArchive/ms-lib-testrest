@@ -9,6 +9,7 @@ php:
 
 services:
   - mysql
+  - memcached
 
 before_install:
   # start a web server on port 8080, running in the background

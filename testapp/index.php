@@ -7,6 +7,12 @@ use Symfony\Component\HttpFoundation\Request;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = new Silex\Application();
+$app->register(new SilexMemcache\MemcacheExtension(), array(
+    'memcache.library' => 'memcached',
+    'memcache.server' => array(
+        array('127.0.0.1', 11211)
+    )
+));
 
 $app->match('empty',
     function (Request $req) {
@@ -16,16 +22,18 @@ $app->match('empty',
 
 $app->match(
     'echo',
-    function (Request $req) {
+    function (Request $req) use ($app) {
         $ret = array(
+            'last-run' => $app['memcache']->get('last-run'),
             'warning' => 'Do not expose this service in production : it is intrinsically unsafe',
         );
+        $app['memcache']->set('last-run', date('Y-m-d H:i:s'));
 
         $ret['method'] = $req->getMethod();
 
         // Forms should be read from request, other data straight from input.
         $requestData = $req->request->all();
-        if (!empty($requestData)) {
+        if (! empty($requestData)) {
             foreach ($requestData as $key => $value) {
                 $ret[$key] = $value;
             }
@@ -33,9 +41,9 @@ $app->match(
 
         /** @var string $content */
         $content = $req->getContent(false);
-        if (!empty($content)) {
+        if (! empty($content)) {
             $data = json_decode($content, true);
-            if (!is_array($data)) {
+            if (! is_array($data)) {
                 $ret['content'] = $content;
             } else {
                 foreach ($data as $key => $value) {
