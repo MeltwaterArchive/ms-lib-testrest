@@ -1,82 +1,71 @@
-DataSift\\TestRest
+testrest-extension
 ==================
-
-* **category** Library
-* **package** \DataSift\TestRest
-* **author** Nicola Asuni <nicola.asuni@datasift.com>
-* **copyright** 2015-2015 MediaSift Ltd. <http://datasift.com>
-* **license** The MIT License (MIT) - see [LICENSE](LICENSE)
-* **link** https://github.com/datasift/ms-lib-testrest
-
 
 ## Description
 
-This library contains utility classes to test end-to-end RESTful services using Gherkin language.
+This behat extension provides utility classes to test end-to-end RESTful services using behat.
 
-The tests are based on [Behat](http://behat.org).
+Installation
+------------
 
+Begin by installing this package through Composer. Edit your project's `composer.json` file to require `datasift/testrest-extension`.
 
-## Installation
+	"require-dev": {
+		"datasift/testrest-extension": "3.*"
+	}
 
-This project requires PHP 5.4.0+ to use the PHP built-in web server.
+Next, update Composer from the Terminal:
 
-* Create a composer.json in your projects root-directory and include this project:
+    composer update
 
-```json
-{
-    "require-dev": {
-        "datasift/ms-lib-testrest": "dev-develop"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/datasift/ms-lib-testrest.git"
-        }
-    ]
-}
-```
-* Create a behat.yml file in the root directory of your project like the one in test/behat.yml and check the internal comments and options.
-* Create a test/features folder in your project like the one in test/features and write your own ".feature" files like the provided example.
-* Create (or update) a makefile like the one in this project which contains the "btest" target. This target starts the PHP built-in server and execute the Behat tests.
+Activate extension by specifying its class in your behat.yml:
 
+```yml
+# behat.yml
+default:
+  extensions:
+      DataSift\TestRestExtension:
+          base_url: http://localhost:8080/
 
-## Development - getting started
-
-First, you need to install all dependencies (you'll need [composer](https://getcomposer.org/)):
-```bash
-$ cd /tmp && curl -sS https://getcomposer.org/installer | php
-$ sudo mv composer.phar /usr/local/bin/composer
+  suites:
+      default:
+          contexts:
+            - 'DataSift\TestRestExtension\Context\RestContext'
 ```
 
-The following command will download all the composer dependencies required for development and testing:
-```bash
-make build_dev
-```
+Database
+--------
 
-### Running Tests
+Supported Drivers
+    - mysql
+    - sqlite
 
-The internal unit tests includes a database testing, so you need to create the following MySQL database with the right privileges:
+Cache
+-----
 
-```sql
-CREATE DATABASE IF NOT EXISTS testrest_test;
-GRANT ALL ON testrest_test.* TO 'testrest'@'%' IDENTIFIED BY 'testrest';
-FLUSH PRIVILEGES;
-```
+Supported drivers
+    - memcached
 
-To execute all the tests you can now run `make qa_all`.
+Testing
+-------
 
-Please issue the command `make help` to see all available options and execute individual tests.
+To test the library itself, run the tests:
 
-### Coding standards
+    composer test
 
-This project follows the PSR2 coding standard. To see any errors in your code, you can use the `make phpcs` command.
-We also use a tool to detect any code smells. To run it, use `make phpmd`.
+Contributing
+------------
 
-Before submitting a Pull Request, please execute the `make qa_all` to be sure that no errors where introduced.
-Additionally, please check the target/coverage/index.html report to be sure that every line of code is covered by a unit test.
-If you add any new gherkin language feature please also add an example in test/features.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
+Credits And Developer Contacts
+-------
 
-## Developer(s) Contact
+- [nicolaasuni](https://github.com/nicolaasuni)
+- [nathanmac](https://github.com/nathanmac)
+- [All Contributors](../../contributors)
 
-* Nicola Asuni <nicola.asuni@datasift.com>
+License
+-------
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

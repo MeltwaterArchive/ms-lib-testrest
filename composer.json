@@ -35,6 +35,9 @@
         "silex/silex": "~1",
         "mheap/Silex-Memcache": "1.0.0"
     },
+    "scripts": {
+        "test": "behat"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
