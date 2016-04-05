@@ -37,14 +37,14 @@ Database
 --------
 
 Supported Drivers
-    - mysql
-    - sqlite
+- mysql
+- sqlite
 
 Cache
 -----
 
 Supported drivers
-    - memcached
+- memcached
 
 Testing
 -------
@@ -63,6 +63,8 @@ Credits And Developer Contacts
 
 - [nicolaasuni](https://github.com/nicolaasuni)
 - [nathanmac](https://github.com/nathanmac)
+- [shwetsai](https://github.com/shwetsai)
+- [mheap](https://github.com/mheap)
 - [All Contributors](../../contributors)
 
 License
