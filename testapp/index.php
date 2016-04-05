@@ -20,6 +20,13 @@ $app->match('empty',
     }
 );
 
+$app->match('file',
+    function (Request $req) {
+        $conf = json_decode(file_get_contents('/tmp/test-rest/conf.json'), true);
+        return new JsonResponse($conf);
+    }
+);
+
 $app->match(
     'echo',
     function (Request $req) use ($app) {
