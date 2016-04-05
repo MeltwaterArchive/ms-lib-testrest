@@ -9,11 +9,6 @@ use PHPUnit_Framework_Assert as Assertions;
 class FileContext implements FileAwareContext
 {
     /**
-     * @var Process
-     */
-    private $process;
-
-    /**
      * @var string
      */
     protected $workingDir;
@@ -38,7 +33,6 @@ class FileContext implements FileAwareContext
         $this->clearDirectory($this->workingDir);
 
         @mkdir($this->workingDir, 0777, true);
-        $this->process = new Process(null);
     }
 
     /**

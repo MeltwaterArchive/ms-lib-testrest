@@ -23,8 +23,7 @@
         "php": ">=5.4",
         "behat/behat": "~3.0",
         "guzzlehttp/guzzle": "4 - 5",
-        "phpunit/phpunit": "4 - 5",
-        "symfony/process": "~2.1"
+        "phpunit/phpunit": "4 - 5"
     },
     "autoload": {
         "psr-4": {
@@ -32,6 +31,7 @@
         }
     },
     "require-dev": {
+        "symfony/process": "~2.1",
         "silex/silex": "~1",
         "mheap/Silex-Memcache": "1.0.0"
     },
