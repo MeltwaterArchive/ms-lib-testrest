@@ -500,7 +500,8 @@ class RestContext implements ApiClientAwareContext
     public function theResponseBodyEquals(PyStringNode $value)
     {
         $actual = (string) $this->response->getBody();
-        Assertions::assertRegExp($value, $actual, 'Response body value mismatch! (given: '.$value.', match: '.$actual.')');
+        $pattern = '/' . trim($value->getRaw()) . '/';
+        Assertions::assertRegExp($pattern, $actual, 'Response body value mismatch! (given: '.$value.', match: '.$actual.')');
     }
 
     /**

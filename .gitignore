@@ -10,3 +10,5 @@ phpunit.xml
 **/._*
 **/*.tmp
 **/*.bak
+mb*.log
+mb*.pid

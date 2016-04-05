@@ -96,6 +96,16 @@ class TestRestExtension implements ExtensionInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('base_url')->defaultValue('http://localhost:8080/')->end()
+                ->arrayNode('mountebank')
+                    ->children()
+                        ->scalarNode('url')->defaultValue('http://localhost:2525')->end()
+                        ->scalarNode('default_mock_host')->defaultValue('http://localhost:4546')->end()
+                        ->integerNode('default_mock_status')->defaultValue(500)->end()
+                        ->scalarNode('command')->defaultValue('mb')->end()
+                        ->scalarNode('on_setup')->defaultFalse()->end()
+                        ->scalarNode('persist')->defaultTrue()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
@@ -142,6 +152,12 @@ class TestRestExtension implements ExtensionInterface
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG);
         $container->setDefinition('test_rest.context_initializer', $definition);
+
+        $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\MountebankAwareInitializer', array(
+            $config
+        ));
+        $definition->addTag(ContextExtension::INITIALIZER_TAG);
+        $container->setDefinition('test_rest.mb.context_initializer', $definition);
 
         if ($container->hasDefinition(self::DB_DRIVER)) {
             $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\DatabaseAwareInitializer', array(
