@@ -44,10 +44,10 @@ abstract class SQLDriver implements DatabaseDriver
     {
         $sql = "";
         if (false !== $this->schema && is_readable($this->schema)) {
-            $sql = file_get_contents($this->schema) . "\n";
+            $sql = "\n". file_get_contents($this->schema) . "\n";
         }
         if (false !== $this->data && is_readable($this->data)) {
-            $sql .= file_get_contents($this->data) . "\n";
+            $sql .= "\n" . file_get_contents($this->data) . "\n";
         }
 
         if ($sql === "") {
