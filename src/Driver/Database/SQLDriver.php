@@ -50,6 +50,10 @@ abstract class SQLDriver implements DatabaseDriver
             $sql .= file_get_contents($this->data) . "\n";
         }
 
+        if ($sql === "") {
+            return array();
+        }
+
         // split sql string into single line SQL statements
         $sql = str_replace("\r", '', $sql); // remove CR
         $sql = preg_replace("/\/\*([^\*]*)\*\//si", ' ', $sql); // remove comments (/* ... */)
