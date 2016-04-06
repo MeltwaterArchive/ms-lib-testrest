@@ -150,6 +150,9 @@ class BaseContext extends BehatContext
             // execute all queries
             @$dbtest->query('SET FOREIGN_KEY_CHECKS=0');
             foreach ($sql_queries as $query) {
+		if (!trim($query)) {
+                    continue;
+                }
                 try {
                     $dbtest->query($query);
                 } catch (\Exception $ex) {
@@ -175,6 +178,9 @@ class BaseContext extends BehatContext
 
             //execute all queries
             foreach ($sql_queries as $query) {
+		if (!trim($query)) {
+                    continue;
+                }
                 try {
                     $dbtest->query($query);
                 } catch (\Exception $ex) {
