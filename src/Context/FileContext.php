@@ -30,7 +30,9 @@ class FileContext implements FileAwareContext
      */
     public function prepareScenario()
     {
-        $this->clearDirectory($this->workingDir);
+        if (is_dir($this->workingDir)) {
+            $this->clearDirectory($this->workingDir);
+        }
 
         @mkdir($this->workingDir, 0777, true);
     }
@@ -64,7 +66,7 @@ class FileContext implements FileAwareContext
     private function createFile($filename, $content)
     {
         $path = dirname($filename);
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             mkdir($path, 0777, true);
         }
 
