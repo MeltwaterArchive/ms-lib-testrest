@@ -87,10 +87,20 @@ class RestContext implements ApiClientAwareContext
         $response = $this->response;
 
         echo sprintf(
-            "%s %s => %d:\n%s",
+            "\033[36m%s => %s\033[0m\n\n\033[36mHTTP/%s %s %s\033[0m\n",
             $request->getMethod(),
             $request->getUrl(),
+            $response->getProtocolVersion(),
             $response->getStatusCode(),
+            $response->getReasonPhrase()
+        );
+
+        foreach($response->getHeaders() as $key => $value) {
+            echo sprintf("\033[36m%s: %s\033[0m\n", $key, implode('; ' . $value));
+        }
+
+        echo sprintf(
+            "\n\033[36m%s\033[0m",
             $response->getBody()
         );
     }
