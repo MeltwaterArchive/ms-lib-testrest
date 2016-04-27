@@ -12,3 +12,4 @@ phpunit.xml
 **/*.bak
 mb*.log
 mb*.pid
+server.log

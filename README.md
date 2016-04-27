@@ -1,6 +1,10 @@
 testrest-extension
 ==================
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/datasift/testrest-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/testrest-extension)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Total Downloads](https://img.shields.io/packagist/dt/datasift/testrest-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/testrest-extension)
+
 ## Description
 
 This behat extension provides utility classes to test end-to-end RESTful services using behat.
