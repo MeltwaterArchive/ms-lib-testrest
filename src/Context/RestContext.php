@@ -96,7 +96,7 @@ class RestContext implements ApiClientAwareContext
         );
 
         foreach($response->getHeaders() as $key => $value) {
-            echo sprintf("\033[36m%s: %s\033[0m\n", $key, implode('; ' . $value));
+            echo sprintf("\033[36m%s: %s\033[0m\n", $key, implode('; ', $value));
         }
 
         echo sprintf(
