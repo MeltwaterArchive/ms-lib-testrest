@@ -7,7 +7,7 @@ Feature: Testing the mysql driver
           formatters:
               progress: ~
           extensions:
-              DataSift\TestRestExtension:
+              DataSift\BehatExtension:
                   base_url: http://localhost:8080/
                   cache:
                     driver: memcached
@@ -17,8 +17,8 @@ Feature: Testing the mysql driver
           suites:
               default:
                   contexts:
-                    - 'DataSift\TestRestExtension\Context\RestContext'
-                    - 'DataSift\TestRestExtension\Context\CacheContext'
+                    - 'DataSift\BehatExtension\Context\RestContext'
+                    - 'DataSift\BehatExtension\Context\CacheContext'
       """
 
   Scenario: Test for API tests

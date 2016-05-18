@@ -1,11 +1,11 @@
 <?php
 
-namespace DataSift\TestRestExtension\Context\Initializer;
+namespace DataSift\BehatExtension\Context\Initializer;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Initializer\ContextInitializer;
-use DataSift\TestRestExtension\Context\CacheAwareContext;
-use DataSift\TestRestExtension\Driver\Cache\CacheDriver;
+use DataSift\BehatExtension\Context\CacheAwareContext;
+use DataSift\BehatExtension\Driver\Cache\CacheDriver;
 
 class CacheAwareInitializer implements ContextInitializer
 {

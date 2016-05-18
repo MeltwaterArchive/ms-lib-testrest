@@ -7,13 +7,13 @@ Feature: Testing the API
           formatters:
               progress: ~
           extensions:
-              DataSift\TestRestExtension:
+              DataSift\BehatExtension:
                   base_url: http://localhost:8080/
 
           suites:
               default:
                   contexts:
-                    - 'DataSift\TestRestExtension\Context\RestContext'
+                    - 'DataSift\BehatExtension\Context\RestContext'
       """
     And a file named "testdata.json" with:
       """

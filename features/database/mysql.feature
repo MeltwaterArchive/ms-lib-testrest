@@ -7,7 +7,7 @@ Feature: Testing the mysql driver
           formatters:
               progress: ~
           extensions:
-              DataSift\TestRestExtension:
+              DataSift\BehatExtension:
                   base_url: http://localhost:8080/
                   database:
                     driver: mysql
@@ -22,8 +22,8 @@ Feature: Testing the mysql driver
           suites:
               default:
                   contexts:
-                    - 'DataSift\TestRestExtension\Context\RestContext'
-                    - 'DataSift\TestRestExtension\Context\DatabaseContext'
+                    - 'DataSift\BehatExtension\Context\RestContext'
+                    - 'DataSift\BehatExtension\Context\DatabaseContext'
       """
     And a file named "schema.sql" with:
       """

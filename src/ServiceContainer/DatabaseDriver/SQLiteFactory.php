@@ -1,8 +1,7 @@
 <?php
 
-namespace DataSift\TestRestExtension\ServiceContainer\DatabaseDriver;
+namespace DataSift\BehatExtension\ServiceContainer\DatabaseDriver;
 
-use Doctrine\DBAL\DriverManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -38,7 +37,7 @@ class SQLiteFactory implements DatabaseDriverFactory
     public function buildDriver(array $config)
     {
 
-        return new Definition('DataSift\TestRestExtension\Driver\Database\SQLiteDriver', array(
+        return new Definition('DataSift\BehatExtension\Driver\Database\SQLiteDriver', array(
             $config['path'],
             isset($config['username']) ? $config['username'] : false,
             isset($config['password']) ? $config['password'] : false,

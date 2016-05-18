@@ -1,6 +1,6 @@
 <?php
 
-namespace DataSift\TestRestExtension\Driver\Cache;
+namespace DataSift\BehatExtension\Driver\Cache;
 
 class MemcachedDriver implements CacheDriver
 {

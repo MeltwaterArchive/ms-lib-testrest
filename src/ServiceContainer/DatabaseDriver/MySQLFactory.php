@@ -1,6 +1,6 @@
 <?php
 
-namespace DataSift\TestRestExtension\ServiceContainer\DatabaseDriver;
+namespace DataSift\BehatExtension\ServiceContainer\DatabaseDriver;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Definition;
@@ -38,7 +38,7 @@ class MySQLFactory implements DatabaseDriverFactory
      */
     public function buildDriver(array $config)
     {
-        return new Definition('DataSift\TestRestExtension\Driver\Database\MySQLDriver', array(
+        return new Definition('DataSift\BehatExtension\Driver\Database\MySQLDriver', array(
             $config['host'],
             $config['port'],
             $config['dbname'],

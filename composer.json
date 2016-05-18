@@ -1,5 +1,5 @@
 {
-    "name": "datasift/testrest-extension",
+    "name": "datasift/behat-extension",
     "description": "Library to test end-to-end RESTful services using Behat",
     "type": "library",
     "homepage": "https://github.com/datasift/ms-lib-testrest",
@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DataSift\\TestRestExtension\\": "src/"
+            "DataSift\\BehatExtension\\": "src/"
         }
     },
     "require-dev": {
@@ -40,7 +40,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "4.0.x-dev"
         }
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace DataSift\TestRestExtension\Context\Initializer;
+namespace DataSift\BehatExtension\Context\Initializer;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Initializer\ContextInitializer;
-use DataSift\TestRestExtension\Context\FileAwareContext;
+use DataSift\BehatExtension\Context\FileAwareContext;
 
 class FileAwareInitializer implements ContextInitializer
 {

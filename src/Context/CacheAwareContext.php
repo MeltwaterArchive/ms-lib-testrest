@@ -1,9 +1,9 @@
 <?php
 
-namespace DataSift\TestRestExtension\Context;
+namespace DataSift\BehatExtension\Context;
 
 use Behat\Behat\Context\Context;
-use DataSift\TestRestExtension\Driver\Cache\CacheDriver;
+use DataSift\BehatExtension\Driver\Cache\CacheDriver;
 
 interface CacheAwareContext extends Context
 {

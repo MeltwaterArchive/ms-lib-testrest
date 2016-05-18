@@ -1,6 +1,6 @@
 <?php
 
-namespace DataSift\TestRestExtension\ServiceContainer\CacheDriver;
+namespace DataSift\BehatExtension\ServiceContainer\CacheDriver;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Definition;

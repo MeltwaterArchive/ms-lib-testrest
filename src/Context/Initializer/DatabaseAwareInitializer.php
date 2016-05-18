@@ -1,12 +1,12 @@
 <?php
 
 
-namespace DataSift\TestRestExtension\Context\Initializer;
+namespace DataSift\BehatExtension\Context\Initializer;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Initializer\ContextInitializer;
-use DataSift\TestRestExtension\Context\DatabaseAwareContext;
-use DataSift\TestRestExtension\Driver\Database\DatabaseDriver;
+use DataSift\BehatExtension\Context\DatabaseAwareContext;
+use DataSift\BehatExtension\Driver\Database\DatabaseDriver;
 
 
 class DatabaseAwareInitializer implements ContextInitializer

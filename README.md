@@ -1,9 +1,9 @@
-testrest-extension
+behat-extension
 ==================
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/datasift/testrest-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/testrest-extension)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/datasift/behat-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/behat-extension)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Total Downloads](https://img.shields.io/packagist/dt/datasift/testrest-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/testrest-extension)
+[![Total Downloads](https://img.shields.io/packagist/dt/datasift/behat-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/behat-extension)
 
 ## Description
 
@@ -12,10 +12,10 @@ This behat extension provides utility classes to test end-to-end RESTful service
 Installation
 ------------
 
-Begin by installing this package through Composer. Edit your project's `composer.json` file to require `datasift/testrest-extension`.
+Begin by installing this package through Composer. Edit your project's `composer.json` file to require `datasift/behat-extension`.
 
 	"require-dev": {
-		"datasift/testrest-extension": "3.*"
+		"datasift/testrest-extension": "4.*"
 	}
 
 Next, update Composer from the Terminal:
@@ -28,13 +28,13 @@ Activate extension by specifying its class in your behat.yml:
 # behat.yml
 default:
   extensions:
-      DataSift\TestRestExtension:
+      DataSift\BehatExtension:
           base_url: http://localhost:8080/
 
   suites:
       default:
           contexts:
-            - 'DataSift\TestRestExtension\Context\RestContext'
+            - 'DataSift\BehatExtension\Context\RestContext'
 ```
 
 Database

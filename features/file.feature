@@ -7,14 +7,14 @@ Feature: Testing the File helper utils
           formatters:
               progress: ~
           extensions:
-              DataSift\TestRestExtension:
+              DataSift\BehatExtension:
                   base_url: http://localhost:8080/
 
           suites:
               default:
                   contexts:
-                    - 'DataSift\TestRestExtension\Context\RestContext'
-                    - 'DataSift\TestRestExtension\Context\FileContext'
+                    - 'DataSift\BehatExtension\Context\RestContext'
+                    - 'DataSift\BehatExtension\Context\FileContext'
       """
 
   Scenario: Testing config file is file is created and accessible
