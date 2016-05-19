@@ -1,6 +1,6 @@
 <?php
 
-namespace DataSift\TestRestExtension\Driver\Database;
+namespace DataSift\BehatExtension\Driver\Database;
 
 abstract class SQLDriver implements DatabaseDriver
 {

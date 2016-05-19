@@ -10,12 +10,12 @@
  * @link        https://github.com/datasift/ms-lib-behat
  */
 
-namespace DataSift\TestRestExtension\Context;
+namespace DataSift\BehatExtension\Context;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
-use DataSift\TestRestExtension\Helper\JsonLoader;
+use DataSift\BehatExtension\Helper\JsonLoader;
 use GuzzleHttp\ClientInterface;
 
 /**

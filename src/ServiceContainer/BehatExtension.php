@@ -1,21 +1,21 @@
 <?php
 
-namespace DataSift\TestRestExtension\ServiceContainer;
+namespace DataSift\BehatExtension\ServiceContainer;
 
 use Behat\Behat\Context\ServiceContainer\ContextExtension;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
-use DataSift\TestRestExtension\ServiceContainer\CacheDriver\CacheDriverFactory;
-use DataSift\TestRestExtension\ServiceContainer\CacheDriver\MemcachedFactory;
-use DataSift\TestRestExtension\ServiceContainer\DatabaseDriver\MySQLFactory;
-use DataSift\TestRestExtension\ServiceContainer\DatabaseDriver\DatabaseDriverFactory;
-use DataSift\TestRestExtension\ServiceContainer\DatabaseDriver\SQLiteFactory;
+use DataSift\BehatExtension\ServiceContainer\CacheDriver\CacheDriverFactory;
+use DataSift\BehatExtension\ServiceContainer\CacheDriver\MemcachedFactory;
+use DataSift\BehatExtension\ServiceContainer\DatabaseDriver\MySQLFactory;
+use DataSift\BehatExtension\ServiceContainer\DatabaseDriver\DatabaseDriverFactory;
+use DataSift\BehatExtension\ServiceContainer\DatabaseDriver\SQLiteFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class TestRestExtension implements ExtensionInterface
+class BehatExtension implements ExtensionInterface
 {
     const CLIENT_ID = 'test_rest.client';
     const DB_DRIVER = 'test_rest.dbdriver';
@@ -147,27 +147,27 @@ class TestRestExtension implements ExtensionInterface
 
     private function loadContextInitializer(ContainerBuilder $container, $config)
     {
-        $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\ApiClientAwareInitializer', array(
+        $definition = new Definition('DataSift\BehatExtension\Context\Initializer\ApiClientAwareInitializer', array(
             new Reference(self::CLIENT_ID),
             $config
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG);
         $container->setDefinition('test_rest.context_initializer', $definition);
 
-        $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\MountebankAwareInitializer', array(
+        $definition = new Definition('DataSift\BehatExtension\Context\Initializer\MountebankAwareInitializer', array(
             $config
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG);
         $container->setDefinition('test_rest.mb.context_initializer', $definition);
 
-        $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\FileAwareInitializer', array(
+        $definition = new Definition('DataSift\BehatExtension\Context\Initializer\FileAwareInitializer', array(
             $config['tmp_path']
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG);
         $container->setDefinition('test_rest.file.context_initializer', $definition);
 
         if ($container->hasDefinition(self::DB_DRIVER)) {
-            $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\DatabaseAwareInitializer', array(
+            $definition = new Definition('DataSift\BehatExtension\Context\Initializer\DatabaseAwareInitializer', array(
                 new Reference(self::DB_DRIVER),
                 $config
             ));
@@ -176,7 +176,7 @@ class TestRestExtension implements ExtensionInterface
         }
 
         if ($container->hasDefinition(self::CACHE_DRIVER)) {
-            $definition = new Definition('DataSift\TestRestExtension\Context\Initializer\CacheAwareInitializer', array(
+            $definition = new Definition('DataSift\BehatExtension\Context\Initializer\CacheAwareInitializer', array(
                 new Reference(self::CACHE_DRIVER),
                 $config
             ));

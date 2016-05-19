@@ -1,6 +1,6 @@
 <?php
 
-namespace DataSift\TestRestExtension\ServiceContainer\DatabaseDriver;
+namespace DataSift\BehatExtension\ServiceContainer\DatabaseDriver;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Definition;

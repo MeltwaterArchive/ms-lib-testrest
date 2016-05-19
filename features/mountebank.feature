@@ -7,15 +7,15 @@ Feature: Testing mountebank mocking
           formatters:
               progress: ~
           extensions:
-              DataSift\TestRestExtension:
+              DataSift\BehatExtension:
                   base_url: http://localhost:4546/
                   mountebank: ~
 
           suites:
               default:
                   contexts:
-                    - 'DataSift\TestRestExtension\Context\RestContext'
-                    - 'DataSift\TestRestExtension\Context\MountebankContext'
+                    - 'DataSift\BehatExtension\Context\RestContext'
+                    - 'DataSift\BehatExtension\Context\MountebankContext'
       """
 
   Scenario: Testing Mountebank not running

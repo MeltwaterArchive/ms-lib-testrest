@@ -1,10 +1,10 @@
 <?php
 
-namespace DataSift\TestRestExtension\Context\Initializer;
+namespace DataSift\BehatExtension\Context\Initializer;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Initializer\ContextInitializer;
-use DataSift\TestRestExtension\Context\MountebankAwareContext;
+use DataSift\BehatExtension\Context\MountebankAwareContext;
 
 class MountebankAwareInitializer implements ContextInitializer
 {

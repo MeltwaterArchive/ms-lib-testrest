@@ -7,7 +7,7 @@ Feature: Testing the sqlite driver
           formatters:
               progress: ~
           extensions:
-              DataSift\TestRestExtension:
+              DataSift\BehatExtension:
                   base_url: http://localhost:8080/
                   database:
                     driver: sqlite
@@ -18,8 +18,8 @@ Feature: Testing the sqlite driver
           suites:
               default:
                   contexts:
-                    - 'DataSift\TestRestExtension\Context\RestContext'
-                    - 'DataSift\TestRestExtension\Context\DatabaseContext'
+                    - 'DataSift\BehatExtension\Context\RestContext'
+                    - 'DataSift\BehatExtension\Context\DatabaseContext'
       """
     And a file named "schema.sql" with:
       """

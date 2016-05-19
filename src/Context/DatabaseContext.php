@@ -13,9 +13,9 @@
  * @subpackage
  */
 
-namespace DataSift\TestRestExtension\Context;
+namespace DataSift\BehatExtension\Context;
 
-use DataSift\TestRestExtension\Driver\Database\DatabaseDriver;
+use DataSift\BehatExtension\Driver\Database\DatabaseDriver;
 use PHPUnit_Framework_Assert as Assertions;
 
 class DatabaseContext implements DatabaseAwareContext

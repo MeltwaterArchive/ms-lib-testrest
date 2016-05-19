@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace DataSift\TestRestExtension\Context;
+namespace DataSift\BehatExtension\Context;
 
 use Behat\Behat\Context\Context;
 use GuzzleHttp\ClientInterface;

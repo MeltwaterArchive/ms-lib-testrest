@@ -1,6 +1,6 @@
 <?php
 
-namespace DataSift\TestRestExtension\Context;
+namespace DataSift\BehatExtension\Context;
 
 use Behat\Behat\Context\Context;
 

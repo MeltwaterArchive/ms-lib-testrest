@@ -1,9 +1,7 @@
 <?php
 
-namespace DataSift\TestRestExtension\ServiceContainer\CacheDriver;
+namespace DataSift\BehatExtension\ServiceContainer\CacheDriver;
 
-use Doctrine\Common\Cache\MemcacheCache;
-use Doctrine\Common\Cache\MemcachedCache;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -34,7 +32,7 @@ class MemcachedFactory implements CacheDriverFactory
      */
     public function buildDriver(array $config)
     {
-        return new Definition('DataSift\TestRestExtension\Driver\Cache\MemcachedDriver', array(
+        return new Definition('DataSift\BehatExtension\Driver\Cache\MemcachedDriver', array(
             $config['host'],
             $config['port']
         ));

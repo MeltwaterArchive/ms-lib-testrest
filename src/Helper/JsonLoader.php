@@ -1,29 +1,7 @@
 <?php
-/**
- * This file is part of DataSift\Behat project.
- *
- * @category    Library
- * @package     DataSift\Helper
- * @author      Michael Heap <michael.heap@datasift.com>
- * @copyright   2015-2015 MediaSift Ltd. <http://datasift.com>
- * @license     https://opensource.org/licenses/MIT The MIT License (MIT) - see the LICENSE file
- * @link        https://github.com/datasift/ms-lib-behat
- */
 
-namespace DataSift\TestRestExtension\Helper;
+namespace DataSift\BehatExtension\Helper;
 
-/**
- * DataSift\TestRest\Exception
- *
- * Base Exception
- *
- * @category    Library
- * @package     DataSift\Helper
- * @author      Michael Heap <michael.heap@datasift.com>
- * @copyright   2015-2016 MediaSift Ltd. <http://datasift.com>
- * @license     https://opensource.org/licenses/MIT The MIT License (MIT) - see the LICENSE file
- * @link        https://github.com/datasift/ms-lib-behat
- */
 class JsonLoader
 {
     static $filePath = '.';

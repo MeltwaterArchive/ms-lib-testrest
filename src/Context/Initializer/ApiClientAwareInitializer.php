@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace DataSift\TestRestExtension\Context\Initializer;
+namespace DataSift\BehatExtension\Context\Initializer;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Initializer\ContextInitializer;
-use DataSift\TestRestExtension\Context\ApiClientAwareContext;
+use DataSift\BehatExtension\Context\ApiClientAwareContext;
 use GuzzleHttp\ClientInterface;
 
 /**
