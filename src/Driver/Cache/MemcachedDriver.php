@@ -38,7 +38,6 @@ class MemcachedDriver implements CacheDriver
      */
     public function flushCache()
     {
-        var_dump('called');
         $this->connect()
             ->flush();
     }
