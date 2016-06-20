@@ -63,7 +63,7 @@ Feature: Testing the API
           '''
           {
             "alpha":"beta",
-            "gamma":"delta",
+            "gamma":"*",
             "count":3,
             "collection":["a","b","c"]
           }

@@ -577,7 +577,10 @@ class RestContext implements ApiClientAwareContext
         Assertions::assertGreaterThanOrEqual(count($etalon), count($actual));
         foreach ($etalon as $key => $needle) {
             Assertions::assertArrayHasKey($key, $actual);
-            Assertions::assertEquals($etalon[$key], $actual[$key]);
+            var_dump($actual[$key]);
+            if ($etalon[$key] != '*') {
+                Assertions::assertEquals($etalon[$key], $actual[$key]);
+            }
         }
 
         return array($actual, $etalon);
