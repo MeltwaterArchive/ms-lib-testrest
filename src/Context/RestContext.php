@@ -486,14 +486,15 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      *
      * @param string $code status code
      *
-     * @Then /^(?:the )?response code should be (\d+)$/
-     * @Then /^the response status code should be "(\d+)"$/
+     * @Then /^(?:the )?response code should be "([^"]*)"$/
+     * @Then /^the response status code should be "([^"]*)"$/
      */
     public function theResponseCodeShouldBe($code)
     {
-        $expected = intval($code);
-        $actual = intval($this->response->getStatusCode());
-        Assertions::assertSame($expected, $actual);
+        $expected = $code;
+        $actual = $this->response->getStatusCode();
+        $pattern = preg_replace('/x/i', '[0-9]', "{$expected}");
+        Assertions::assertRegExp("/^{$pattern}$/", "{$actual}");
     }
 
     /* ----------------------------------------------------------------------------- */

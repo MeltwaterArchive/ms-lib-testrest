@@ -57,7 +57,7 @@ Feature: Testing the API
           }
           '''
           When I make a "POST" request to "/echo"
-          Then the response status code should be "200"
+          Then the response status code should be "2xx"
           And the response is not empty
           And the response body contains the JSON data
           '''
