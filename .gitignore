@@ -13,3 +13,5 @@ phpunit.xml
 mb*.log
 mb*.pid
 server.log
+
+*.sw*
