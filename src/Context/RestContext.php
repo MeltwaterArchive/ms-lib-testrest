@@ -8,7 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use PHPUnit_Framework_Assert as Assertions;
 
-class RestContext implements ApiClientAwareContext
+class RestContext extends File implements ApiClientAwareContext, FileAwareContext
 {
     /**
      * @var string
@@ -400,6 +400,10 @@ class RestContext implements ApiClientAwareContext
             $this->sendRequest();
 
         } elseif (in_array($method, array('post', 'put', 'patch'))) {
+            if (is_string($body)) {
+                $body = $this->processBodyForVariables($body);
+            }
+
             $this->request = $this->getClient()->createRequest(
                 $method,
                 $url,
@@ -411,6 +415,23 @@ class RestContext implements ApiClientAwareContext
             $this->sendRequest();
         }
 
+    }
+
+    /**
+     * Process stored variables and insert them to the JSON string
+     *
+     * @param $body
+     *
+     * @return mixed
+     */
+    protected function processBodyForVariables($body)
+    {
+        $variables = $this->openJSONFile('variables.json');
+        foreach ($variables as $key => $value) {
+            $body = preg_replace('/<' . $key . '>/i', $value, $body);
+        }
+
+        return $body;
     }
 
     /* ----------------------------------------------------------------------------- */
@@ -473,6 +494,40 @@ class RestContext implements ApiClientAwareContext
         $expected = intval($code);
         $actual = intval($this->response->getStatusCode());
         Assertions::assertSame($expected, $actual);
+    }
+
+    /* ----------------------------------------------------------------------------- */
+    /* --------------------------------VARIABLES------------------------------------ */
+    /* ----------------------------------------------------------------------------- */
+
+    /**
+     * Save property to variable.
+     *
+     * @Then /^save the "([^"]*)" property into "([^"]*)"$/
+     */
+    public function saveThePropertyInto($propertyName, $variable)
+    {
+        try {
+            $value = $this->getObjectValue($propertyName);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        $variables = $this->openJSONFile('variables.json');
+        $variables[$variable] = $value;
+        $this->saveJSONFile('variables.json', $variables);
+    }
+
+    /**
+     * Save value to variable.
+     *
+     * @Then /^save "([^"]*)" to "([^"]*)"$/
+     */
+    public function saveTo($value, $variable)
+    {
+        $variables = $this->openJSONFile('variables.json');
+        $variables[$variable] = $value;
+        $this->saveJSONFile('variables.json', $variables);
     }
 
     /* ----------------------------------------------------------------------------- */
