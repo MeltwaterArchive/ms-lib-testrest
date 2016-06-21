@@ -567,6 +567,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     {
         $actual = (string) $this->response->getBody();
         $pattern = '/' . trim($value->getRaw()) . '/';
+        $pattern = $this->processBodyForVariables($pattern);
         Assertions::assertRegExp($pattern, $actual, 'Response body value mismatch! (given: '.$value.', match: '.$actual.')');
     }
 
@@ -621,12 +622,15 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      */
     public function theResponseShouldContainJson(PyStringNode $jsonString)
     {
-        $etalon = json_decode($this->replacePlaceHolder($jsonString->getRaw()), true);
+        $substituted = $this->replacePlaceHolder($jsonString->getRaw());
+        $substituted = $this->processBodyForVariables($substituted);
+
+        $etalon = json_decode($substituted, true);
         $actual = $this->response->json();
 
         if (null === $etalon) {
             throw new \RuntimeException(
-                "Can not convert etalon to json:\n" . $this->replacePlaceHolder($jsonString->getRaw())
+                "Can not convert etalon to json:\n" . $substituted
             );
         }
 
