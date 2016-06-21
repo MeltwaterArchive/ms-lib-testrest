@@ -52,7 +52,14 @@ Feature: Testing the variable store
           And the response has a "saved-variable-2" property
           And the "saved-variable-1" property equals "beta"
           And the "saved-variable-2" property equals "testing"
-          And the response body JSON equals
+          And the response body contains the JSON data
+          '''
+          {
+            "saved-variable-1":"<alpha>",
+            "saved-variable-2":"<beta>"
+          }
+          '''
+          And the response body contains the JSON data
           '''
           {
             "saved-variable-1":"beta",
@@ -63,8 +70,8 @@ Feature: Testing the variable store
     When I run "behat features/variables.feature"
     Then it should pass with:
       """
-      ................
+      ..................
 
       1 scenario (1 passed)
-      16 steps (16 passed)
+      18 steps (18 passed)
       """
