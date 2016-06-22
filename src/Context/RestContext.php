@@ -667,8 +667,9 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      */
     public function theResponseBodyJsonEquals(PyStringNode $value)
     {
-        list($data, $value) = $this->theResponseShouldContainJson($value);
-        $diff = $this->getArrayDiff($data, $value);
+        $value_processed = $this->processForVariables($value);
+        list($data, $value_processed) = $this->theResponseShouldContainJson($value_processed);
+        $diff = $this->getArrayDiff($data, $value_processed);
         Assertions::assertEmpty($diff, 'Response body value mismatch! Extra item(s):'."\n".print_r($diff, true));
     }
 
