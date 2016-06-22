@@ -384,6 +384,9 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
             $body = (array)$this->restObj;
         }
 
+        // Reset the restObj, so we can send another request in the same scenario
+        $this->restObj = null;
+
         if (in_array($method, array('get', 'head', 'delete'))) {
             // add query properties (if any)
             if (!empty($body) && is_array($body)) {
