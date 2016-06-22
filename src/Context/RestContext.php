@@ -535,6 +535,38 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         $this->saveJSONFile('variables.json', $variables);
     }
 
+    /**
+     * Print the stored variables
+     *
+     * Example:
+     *     Then echo stored variables
+     *
+     * @Then /^echo stored variables$/
+     * @Then print variables
+     */
+    public function printVariables()
+    {
+        $variables = $this->openJSONFile('variables.json');
+
+        $first = true;
+        foreach($variables as $key => $value) {
+            echo sprintf((!$first ? "\n" : "") . "\033[36m%s: %s\033[0m", $key, $value);
+            $first = false;
+        }
+    }
+
+    /**
+     * Unset a variable.
+     *
+     * @Then /^(?:I )?unset "([^"]*)"$/
+     */
+    public function unsetValue($variable)
+    {
+        $variables = $this->openJSONFile('variables.json');
+        unset($variables[$variable]);
+        $this->saveJSONFile('variables.json', $variables);
+    }
+
     /* ----------------------------------------------------------------------------- */
     /* ----------------------------RESPONSE (payload)------------------------------- */
     /* ----------------------------------------------------------------------------- */

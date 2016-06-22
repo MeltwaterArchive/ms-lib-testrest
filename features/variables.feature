@@ -68,12 +68,15 @@ Feature: Testing the variable store
           '''
           When I make a "POST" request to "/echo?test=<alpha>"
           And the "query.test" property equals "beta"
+          And echo stored variables
+          And I unset "alpha"
+          And echo stored variables
       """
     When I run "behat features/variables.feature"
     Then it should pass with:
       """
-      ....................
+      .......................
 
       1 scenario (1 passed)
-      20 steps (20 passed)
+      23 steps (23 passed)
       """
