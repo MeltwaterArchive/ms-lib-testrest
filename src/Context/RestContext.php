@@ -168,7 +168,8 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      */
     public function thatTheRequestBodyIsValidJson(PyStringNode $data)
     {
-        Assertions::assertNotNull(json_decode((string)$data), 'The input is not a valid JSON.');
+        $body = $this->processForVariables((string)$data);
+        Assertions::assertNotNull(json_decode((string)$body), 'The input is not a valid JSON.');
         $this->thatHeaderPropertyIs('Content-Type', 'application/json');
         $this->thatTheRequestBodyIs($data);
     }
