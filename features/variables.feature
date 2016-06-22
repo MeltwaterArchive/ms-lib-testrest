@@ -66,12 +66,14 @@ Feature: Testing the variable store
             "saved-variable-2":"testing"
           }
           '''
+          When I make a "POST" request to "/echo?test=<alpha>"
+          And the "query.test" property equals "beta"
       """
     When I run "behat features/variables.feature"
     Then it should pass with:
       """
-      ..................
+      ....................
 
       1 scenario (1 passed)
-      18 steps (18 passed)
+      20 steps (20 passed)
       """
