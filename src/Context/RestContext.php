@@ -404,7 +404,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
 
         } elseif (in_array($method, array('post', 'put', 'patch'))) {
             if (is_string($body)) {
-                $body = $this->processBodyForVariables($body);
+                $body = $this->processForVariables($body);
             }
 
             $this->request = $this->getClient()->createRequest(
@@ -427,7 +427,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      *
      * @return mixed
      */
-    protected function processBodyForVariables($body)
+    protected function processForVariables($body)
     {
         $variables = $this->openJSONFile('variables.json');
         foreach ($variables as $key => $value) {
@@ -570,7 +570,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     {
         $actual = (string) $this->response->getBody();
         $pattern = '/' . trim($value->getRaw()) . '/';
-        $pattern = $this->processBodyForVariables($pattern);
+        $pattern = $this->processForVariables($pattern);
         Assertions::assertRegExp($pattern, $actual, 'Response body value mismatch! (given: '.$value.', match: '.$actual.')');
     }
 
@@ -626,7 +626,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function theResponseShouldContainJson(PyStringNode $jsonString)
     {
         $substituted = $this->replacePlaceHolder($jsonString->getRaw());
-        $substituted = $this->processBodyForVariables($substituted);
+        $substituted = $this->processForVariables($substituted);
 
         $etalon = json_decode($substituted, true);
         $actual = $this->response->json();
@@ -896,7 +896,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      */
     private function prepareUrl($url)
     {
-        return ltrim($this->replacePlaceHolder($url), '/');
+        return $this->processForVariables(ltrim($this->replacePlaceHolder($url), '/'));
     }
 
     /**
