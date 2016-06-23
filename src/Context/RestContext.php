@@ -141,7 +141,8 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         if (($value === 'null')) {
             return;
         }
-        $this->addHeader($name, $value);
+        $processedValue = $this->processForVariables($value);
+        $this->addHeader($name, $processedValue);
     }
 
     /* ----------------------------------------------------------------------------- */
@@ -526,12 +527,13 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     /**
      * Save value to variable.
      *
-     * @Then /^save "([^"]*)" to "([^"]*)"$/
+     * @Then /^save "((?:\\.|[^\\"])*)" to "([^"]*)"$/
      */
     public function saveTo($value, $variable)
     {
         $variables = $this->openJSONFile('variables.json');
-        $variables[$variable] = $value;
+        $processedValue = $this->processForVariables($value);
+        $variables[$variable] = $processedValue;
         $this->saveJSONFile('variables.json', $variables);
     }
 

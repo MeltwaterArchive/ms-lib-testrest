@@ -38,11 +38,17 @@ Feature: Testing the variable store
           And the "alpha" property equals "beta"
           And save the "alpha" property into "alpha"
           And save "testing" to "beta"
+          And save "two variables <alpha> and <beta> combined" to "epsilon"
+          And save "text \"string\" in escaped double quotes" to "zeta"
+          And save "variable \"<alpha>\" in escaped double quotes" to "eta"
           Given that the request body is valid JSON
           '''
           {
             "saved-variable-1":"<alpha>",
-            "saved-variable-2":"<beta>"
+            "saved-variable-2":"<beta>",
+            "saved-variable-3":"<epsilon>",
+            "saved-variable-4":"<zeta>",
+            "saved-variable-5":"<eta>"
           }
           '''
           When I make a "POST" request to "/echo"
@@ -52,18 +58,16 @@ Feature: Testing the variable store
           And the response has a "saved-variable-2" property
           And the "saved-variable-1" property equals "beta"
           And the "saved-variable-2" property equals "testing"
-          And the response body contains the JSON data
+          And the "saved-variable-3" property equals "two variables beta and testing combined"
+          And the "saved-variable-4" property equals "text "string" in escaped double quotes"
+          And the "saved-variable-5" property equals "variable "beta" in escaped double quotes"
           '''
           {
             "saved-variable-1":"<alpha>",
-            "saved-variable-2":"<beta>"
-          }
-          '''
-          And the response body contains the JSON data
-          '''
-          {
-            "saved-variable-1":"beta",
-            "saved-variable-2":"testing"
+            "saved-variable-2":"<beta>",
+            "saved-variable-3":"<epsilon>",
+            "saved-variable-4":"<zeta>",
+            "saved-variable-5":"<eta>"
           }
           '''
           When I make a "POST" request to "/echo?test=<alpha>"
@@ -78,5 +82,5 @@ Feature: Testing the variable store
       .......................
 
       1 scenario (1 passed)
-      23 steps (23 passed)
+      27 steps (27 passed)
       """
