@@ -536,7 +536,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         $variables[$variable] = $processedValue;
         $this->saveJSONFile('variables.json', $variables);
     }
-    
+
     /**
      * Print the stored variables
      *
