@@ -76,6 +76,8 @@ Feature: Testing the API
 
          Scenario: Simple test that show most options
           Given that header property "Test" is "12345"
+          And save "321" to "header-variable"
+          And that header property "Test2" is "<header-variable>"
           And that "property[0].name" is "12345"
             # NOTE: The following loads data from a JSON file and converts it into property-value items
           Given that the properties in the "JSON"
@@ -193,8 +195,8 @@ Feature: Testing the API
     Then it should pass with:
       """
       ...................................................................... 70
-      ............
+      ..............
 
       10 scenarios (10 passed)
-      82 steps (82 passed)
+      84 steps (84 passed)
       """
