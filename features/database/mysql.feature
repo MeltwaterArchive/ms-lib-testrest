@@ -14,8 +14,7 @@ Feature: Testing the mysql driver
                     dbname: testrest_test
                     host: 127.0.0.1
                     port: ~
-                    username: testrest
-                    password: testrest
+                    username: travis
                     schema: schema.sql
                     data: data.sql
 
