@@ -11,7 +11,7 @@ Feature: Testing the mysql driver
                   base_url: http://localhost:8080/
                   database:
                     driver: mysql
-                    dbname: testrest
+                    dbname: testrest_test
                     host: 127.0.0.1
                     port: ~
                     username: testrest

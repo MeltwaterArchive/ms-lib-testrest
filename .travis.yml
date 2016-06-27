@@ -3,14 +3,17 @@ language: php
 php:
   - 5.6
   - 7.0
-  - hhvm
 
 services:
   - mysql
   - memcached
 
 before_install:
+  # Memcached settings for php
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # MySQL settings
+  - mysql -e "CREATE DATABASE IF NOT EXISTS testrest_test;"
+  - mysql -e "GRANT ALL ON testrest_test.* TO 'testrest'@'%' IDENTIFIED BY 'testrest';"
   # start a web server on port 8080, running in the background
   - bin/start_server.sh
 
