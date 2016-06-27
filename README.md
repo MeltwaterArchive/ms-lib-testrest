@@ -3,6 +3,7 @@ behat-extension
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/datasift/behat-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/behat-extension)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/datasift/ms-lib-testrest/master.svg?style=flat-square)](https://travis-ci.org/datasift/ms-lib-testrest)
 [![Total Downloads](https://img.shields.io/packagist/dt/datasift/behat-extension.svg?style=flat-square)](https://packagist.org/packages/datasift/behat-extension)
 
 ## Description
