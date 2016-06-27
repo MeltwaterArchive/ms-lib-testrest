@@ -20,6 +20,8 @@ before_install:
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # MySQL settings
   - mysql -e "CREATE DATABASE IF NOT EXISTS testrest_test;"
+  # Install mountebank
+  - npm install -g mountebank
   # start a web server on port 8080, running in the background
   - bin/start_server.sh
 
