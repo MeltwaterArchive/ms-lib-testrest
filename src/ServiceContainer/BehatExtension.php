@@ -41,6 +41,9 @@ class BehatExtension implements ExtensionInterface
 
     public function __construct()
     {
+        // force the default timezone to UTC
+        ini_set('date.timezone', 'UTC');
+
         // Supported database drivers
         $this->registerDatabaseDriverFactory(new MySQLFactory());
         $this->registerDatabaseDriverFactory(new SQLiteFactory());
