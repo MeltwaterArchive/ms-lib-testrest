@@ -163,10 +163,12 @@ class MountebankContext implements ApiClientAwareContext, MountebankAwareContext
     {
         if (static::isMountebankRunning()) {
             $file = '/tmp/_behat_mountebank_pid';
-            $pid = file_get_contents($file);
+            if (file_exists($file)) {
+                $pid = file_get_contents($file);
 
-            posix_kill((int) $pid, SIGKILL);
-            unlink($file);
+                posix_kill((int) $pid, SIGKILL);
+                unlink($file);
+            }
         }
     }
 
