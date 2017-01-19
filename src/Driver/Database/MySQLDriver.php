@@ -69,7 +69,9 @@ class MySQLDriver extends SQLDriver implements DatabaseDriver
         @$dbtest->query('SET FOREIGN_KEY_CHECKS=0');
         foreach ($this->loadSqlQueries() as $query) {
             try {
-                $dbtest->query($query);
+                if (! empty($query)) {
+                    $dbtest->query($query);
+                }
             } catch (\Exception $ex) {
                 print "$query\n";
                 throw $ex;
