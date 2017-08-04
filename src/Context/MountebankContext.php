@@ -17,6 +17,7 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use DataSift\BehatExtension\Helper\JsonLoader;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * DataSift\Behat\MountebankContext
@@ -182,7 +183,7 @@ class MountebankContext implements ApiClientAwareContext, MountebankAwareContext
         if (static::isMountebankRunning()) {
             $this->mocks = array();
             $mbUrl = $this->mountebank['url'].'/imposters';
-            $request = $this->getClient()->createRequest(
+            $request = new Request(
                 'delete',
                 $mbUrl
             );
@@ -458,12 +459,11 @@ class MountebankContext implements ApiClientAwareContext, MountebankAwareContext
                 'stubs' => $stubs
             );
 
-            $request = $this->getClient()->createRequest(
+            $request = new Request(
                 'post',
                 $mbUrl,
-                array(
-                    'body' => json_encode($body)
-                )
+                array(),
+                json_encode($body)
             );
 
             $this->getClient()->send($request);

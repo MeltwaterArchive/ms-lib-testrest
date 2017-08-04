@@ -15,8 +15,16 @@ Installation
 
 Begin by installing this package through Composer. Edit your project's `composer.json` file to require `datasift/behat-extension`.
 
+If you need support for Guzzle 4-5, use testrest-extension 4.x.
+
 	"require-dev": {
 		"datasift/testrest-extension": "4.*"
+	}
+	
+If you need support for Guzzle 6, use testrest-extension 5.x.
+
+	"require-dev": {
+		"datasift/testrest-extension": "5.*"
 	}
 
 Next, update Composer from the Terminal:

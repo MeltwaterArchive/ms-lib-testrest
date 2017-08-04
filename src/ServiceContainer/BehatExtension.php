@@ -93,12 +93,16 @@ class BehatExtension implements ExtensionInterface
                     $v['cache'][$db['driver']] = $db;
                     unset($v['cache'][$db['driver']]['driver']);
                 }
+                if (isset($v['base_url'])) {
+                    $v['base_uri'] = $v['base_url'];
+                    unset($v['base_url']);
+                }
                 return $v;
             })
             ->end()
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('base_url')->defaultValue('http://localhost:8080/')->end()
+                ->scalarNode('base_uri')->defaultValue('http://localhost:8080/')->end()
                 ->scalarNode('tmp_path')->defaultValue('/tmp/test-rest')->end()
                 ->arrayNode('mountebank')
                     ->children()
