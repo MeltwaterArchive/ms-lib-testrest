@@ -6,6 +6,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 use PHPUnit_Framework_Assert as Assertions;
 
 class RestContext extends File implements ApiClientAwareContext, FileAwareContext
@@ -31,7 +32,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     protected $request;
 
     /**
-     * @var \GuzzleHttp\Message\ResponseInterface
+     * @var \GuzzleHttp\Psr7\Response
      */
     protected $response;
 
@@ -89,7 +90,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         echo sprintf(
             "\033[36m%s => %s\033[0m\n\n\033[36mHTTP/%s %s %s\033[0m\n",
             $request->getMethod(),
-            $request->getUrl(),
+            (string)$request->getUri(),
             $response->getProtocolVersion(),
             $response->getStatusCode(),
             $response->getReasonPhrase()
@@ -395,21 +396,19 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
                 $url .= $this->getUrlQuerySeparator($url).http_build_query($body, '', '&');
             }
 
-            $this->request = $this->getClient()->createRequest(
+            $this->request = $this->createRequest(
                 $method,
                 $url,
                 array(
                     'headers' => $this->getHeaders()
                 )
             );
-            $this->sendRequest();
-
         } elseif (in_array($method, array('post', 'put', 'patch'))) {
             if (is_string($body)) {
                 $body = $this->processForVariables($body);
             }
 
-            $this->request = $this->getClient()->createRequest(
+            $this->request = $this->createRequest(
                 $method,
                 $url,
                 array(
@@ -417,9 +416,26 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
                     'body' => $body,
                 )
             );
-            $this->sendRequest();
+        } else {
+            throw new \Exception('Method was not one of the allowed values');
         }
+        $this->sendRequest();
+    }
 
+    /**
+     * Create a HTTP(S) request based on the method, url, headers and body provided
+     *
+     * @param string $method  HTTP method (POST|PUT|PATCH|GET|HEAD|DELETE)
+     * @param string $url     URL of the RESTful service to test
+     * @param array $options  headers and body
+     *
+     * @return Request
+     */
+    protected function createRequest($method, $url, $options)
+    {
+        $headers = array_key_exists('headers', $options) ? $options['headers'] : [];
+        $body = array_key_exists('body', $options) && !empty($options['body']) ? $options['body'] : null;
+        return new Request($method, $url, $headers, $body);
     }
 
     /**
@@ -456,7 +472,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      */
     public function theHeaderPropertyEquals($key, $expected)
     {
-        $actual = $this->response->getHeader($key);
+        $actual = $this->response->getHeaderLine($key);
         if (($actual === null) && ($expected == 'null')) {
             return;
         }
@@ -477,7 +493,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
      */
     public function theValueOfTheHeaderPropertyMatchesThePattern($propertyName, $pattern)
     {
-        $value = $this->response->getHeader($propertyName);
+        $value = $this->response->getHeaderLine($propertyName);
         Assertions::assertRegExp(
             $pattern,
             $value,
@@ -664,8 +680,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         $substituted = $this->processForVariables($substituted);
 
         $etalon = json_decode($substituted, true);
-        $actual = $this->response->json();
-
+        $actual = json_decode((string)$this->response->getBody(), true);
         if (null === $etalon) {
             throw new \RuntimeException(
                 "Can not convert etalon to json:\n" . $substituted
