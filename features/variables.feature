@@ -79,7 +79,7 @@ Feature: Testing the variable store
     When I run "behat features/variables.feature"
     Then it should pass with:
       """
-      .......................
+      ...........................
 
       1 scenario (1 passed)
       27 steps (27 passed)

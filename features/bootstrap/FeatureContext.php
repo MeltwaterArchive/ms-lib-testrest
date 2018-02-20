@@ -119,7 +119,10 @@ class FeatureContext implements SnippetAcceptingContext
      */
     public function theOutputShouldContain(PyStringNode $text)
     {
-        \Webmozart\Assert\Assert::contains($this->getExpectedOutput($text), $this->getOutput());
+        \Webmozart\Assert\Assert::contains(
+            $this->getExpectedOutput($text),
+            $this->getOutput()
+        );
     }
 
     private function getExpectedOutput(PyStringNode $expectedText)
