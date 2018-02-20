@@ -2,10 +2,6 @@
 
 namespace DataSift\BehatExtension\Context;
 
-use Behat\Gherkin\Node\PyStringNode;
-use Symfony\Component\Process\Process;
-use PHPUnit_Framework_Assert as Assertions;
-
 abstract class File implements FileAwareContext
 {
     /**

@@ -3,8 +3,7 @@
 namespace DataSift\BehatExtension\Context;
 
 use Behat\Gherkin\Node\PyStringNode;
-use Symfony\Component\Process\Process;
-use PHPUnit_Framework_Assert as Assertions;
+use Webmozart\Assert\Assert;
 
 class FileContext extends File implements FileAwareContext
 {
@@ -31,6 +30,6 @@ class FileContext extends File implements FileAwareContext
      */
     public function fileShouldExist($path)
     {
-        Assertions::assertFileExists($this->workingDir . DIRECTORY_SEPARATOR . $path);
+        Assert::fileExists($this->workingDir . DIRECTORY_SEPARATOR . $path);
     }
 }

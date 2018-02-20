@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
-use PHPUnit_Framework_Assert as Assertions;
+use Webmozart\Assert\Assert;
 
 class RestContext extends File implements ApiClientAwareContext, FileAwareContext
 {
@@ -171,7 +171,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function thatTheRequestBodyIsValidJson(PyStringNode $data)
     {
         $body = $this->processForVariables((string)$data);
-        Assertions::assertNotNull(json_decode((string)$body), 'The input is not a valid JSON.');
+        Assert::notNull(json_decode((string)$body), 'The input is not a valid JSON.');
         $this->thatHeaderPropertyIs('Content-Type', 'application/json');
         $this->thatTheRequestBodyIs($data);
     }
@@ -477,7 +477,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
             return;
         }
 
-        Assertions::assertSame($expected, $actual);
+        Assert::same($expected, $actual);
     }
 
     /**
@@ -494,9 +494,9 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function theValueOfTheHeaderPropertyMatchesThePattern($propertyName, $pattern)
     {
         $value = $this->response->getHeaderLine($propertyName);
-        Assertions::assertRegExp(
-            $pattern,
+        Assert::regex(
             $value,
+            $pattern,
             'The value of header \''.$propertyName.'\' is \''.$value
             .'\' and does not matches the pattern \''.$pattern.'\'!'."\n"
         );
@@ -515,7 +515,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         $expected = $code;
         $actual = $this->response->getStatusCode();
         $pattern = preg_replace('/x/i', '[0-9]', "{$expected}");
-        Assertions::assertRegExp("/^{$pattern}$/", "{$actual}");
+        Assert::regex("{$actual}", "/^{$pattern}$/");
     }
 
     /* ----------------------------------------------------------------------------- */
@@ -600,7 +600,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function getResponseData()
     {
         $data = json_decode($this->response->getBody());
-        Assertions::assertNotEmpty($data, 'Response was not JSON:'."\n\n".$this->response->getBody());
+        Assert::notEmpty($data, 'Response was not JSON:'."\n\n".$this->response->getBody());
         return $data;
     }
 
@@ -622,7 +622,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         $actual = (string) $this->response->getBody();
         $pattern = '/' . trim($value->getRaw()) . '/';
         $pattern = $this->processForVariables($pattern);
-        Assertions::assertRegExp($pattern, $actual, 'Response body value mismatch! (given: '.$value.', match: '.$actual.')');
+        Assert::regex($actual, $pattern, 'Response body value mismatch! (given: '.$value.', match: '.$actual.')');
     }
 
     /**
@@ -636,7 +636,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     {
         $expectedRegexp = '/' . preg_quote($text) . '/i';
         $actual = (string) $this->response->getBody();
-        Assertions::assertRegExp($expectedRegexp, $actual);
+        Assert::regex($actual, $expectedRegexp);
     }
 
     /**
@@ -687,11 +687,11 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
             );
         }
 
-        Assertions::assertGreaterThanOrEqual(count($etalon), count($actual));
+        Assert::greaterThanEq(count($actual), count($etalon));
         foreach ($etalon as $key => $needle) {
-            Assertions::assertArrayHasKey($key, $actual);
+            Assert::keyExists($actual, $key);
             if ($etalon[$key] != '*') {
-                Assertions::assertEquals($etalon[$key], $actual[$key]);
+                Assert::eq($etalon[$key], $actual[$key]);
             }
         }
 
@@ -718,7 +718,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     {
         list($data, $value) = $this->theResponseShouldContainJson($value);
         $diff = $this->getArrayDiff($data, $value);
-        Assertions::assertEmpty($diff, 'Response body value mismatch! Extra item(s):'."\n".print_r($diff, true));
+        Assert::isEmpty($diff, 'Response body value mismatch! Extra item(s):'."\n".print_r($diff, true));
     }
 
     /**
@@ -822,7 +822,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     {
         $value = trim($this->response->getBody());
         $result = preg_match($pattern, $value);
-        Assertions::assertNotEmpty($result, 'The response body does not matches the pattern \''.$pattern.'\'!'."\n");
+        Assert::notEmpty($result, 'The response body does not matches the pattern \''.$pattern.'\'!'."\n");
     }
 
     /**
@@ -841,7 +841,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     {
         $value = $this->getObjectValue($name);
         $actual = gettype($value);
-        Assertions::assertEquals($type, $actual, "Property '{$name}' is of type '{$actual}' and not '{$type}'!\n");
+        Assert::eq($type, $actual, "Property '{$name}' is of type '{$actual}' and not '{$type}'!\n");
     }
 
     /**
@@ -863,9 +863,9 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
         if ($numitems == 'null') {
             return;
         }
-        Assertions::assertCount(
-            (int) $numitems,
+        Assert::count(
             (array) $this->getObjectValue($name),
+            (int) $numitems,
             'Property count mismatch! (given: '.$numitems.', match: '.count((array) $this->getObjectValue($name)).')'
         );
     }
@@ -884,7 +884,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function theLengthOfThePropertyShouldBe($name, $length)
     {
         $actualLength = strlen($this->getObjectValue($name));
-        Assertions::assertEquals($length, $actualLength, "The length of property '{$name}' is '{$actualLength}' and not '{$length}'!\n");
+        Assert::eq($length, $actualLength, "The length of property '{$name}' is '{$actualLength}' and not '{$length}'!\n");
     }
 
     /**
@@ -902,9 +902,9 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function theValueOfThePropertyMatchesThePattern($name, $pattern)
     {
         $value = (string)$this->getObjectValue($name);
-        Assertions::assertRegExp(
-            $pattern,
+        Assert::regex(
             $value,
+            $pattern,
             "The value of property '{$name}' is '{$value}' and does not matches the pattern '{$pattern}'!\n"
         );
     }
@@ -920,7 +920,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function theResponseIsEmpty()
     {
         $data = trim($this->response->getBody());
-        Assertions::assertEmpty($data, "Response body is not empty! (match: {$data})");
+        Assert::isEmpty($data, "Response body is not empty! (match: {$data})");
     }
 
     /**
@@ -934,7 +934,7 @@ class RestContext extends File implements ApiClientAwareContext, FileAwareContex
     public function theResponseIsNotEmpty()
     {
         $data = trim($this->response->getBody());
-        Assertions::assertNotEmpty($data, 'Response body is empty!');
+        Assert::notEmpty($data, 'Response body is empty!');
     }
 
     /**
