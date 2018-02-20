@@ -16,7 +16,7 @@
 namespace DataSift\BehatExtension\Context;
 
 use DataSift\BehatExtension\Driver\Database\DatabaseDriver;
-use PHPUnit_Framework_Assert as Assertions;
+use Webmozart\Assert\Assert;
 
 class DatabaseContext implements DatabaseAwareContext
 {
@@ -55,6 +55,6 @@ class DatabaseContext implements DatabaseAwareContext
     public function thatTheTableHasNRows($table, $count)
     {
         $actual = $this->driver->countRowsInTable($table);
-        Assertions::assertEquals($count, $actual, 'Row count mismatch! (given: '.$count.', match: '.$actual.')');
+        Assert::eq($count, $actual, 'Row count mismatch! (given: '.$count.', match: '.$actual.')');
     }
 }
