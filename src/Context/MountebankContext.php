@@ -183,12 +183,10 @@ class MountebankContext implements ApiClientAwareContext, MountebankAwareContext
         if (static::isMountebankRunning()) {
             $this->mocks = array();
             $mbUrl = $this->mountebank['url'].'/imposters';
-            $request = new Request(
-                'delete',
+            $this->getClient()->request(
+                'DELETE',
                 $mbUrl
             );
-
-            $this->getClient()->send($request);
         }
     }
 
@@ -459,14 +457,13 @@ class MountebankContext implements ApiClientAwareContext, MountebankAwareContext
                 'stubs' => $stubs
             );
 
-            $request = new Request(
+            $this->getClient()->request(
                 'post',
                 $mbUrl,
-                array(),
-                json_encode($body)
+                [
+                    'json' => $body,
+                ]
             );
-
-            $this->getClient()->send($request);
         }
     }
 
@@ -484,6 +481,9 @@ class MountebankContext implements ApiClientAwareContext, MountebankAwareContext
         return $parts;
     }
 
+    /**
+     * @return ClientInterface
+     */
     protected function getClient()
     {
         if (null === $this->client) {
